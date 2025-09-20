@@ -73,6 +73,7 @@ void TASKS_LIST_100MS( void )
  */
 void TASK_1( void )
 {
+    vfnLed1Ctrl_BlinkingPattern();
     dummy_counters_tasks[TASKP_1]++;
 }
 
@@ -91,7 +92,7 @@ void TASK_2( void )
  */
 void TASK_3( void )
 {
-    vfnLedCtrl_BlinkingPattern();
+    vfnLed0Ctrl_BlinkingPattern();
     dummy_counters_tasks[TASKP_3]++;
 }
 

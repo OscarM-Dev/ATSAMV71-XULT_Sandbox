@@ -37,8 +37,11 @@
 /** Configures LED 0 and 1 of SAMV71 board */
 void vfnLedCtrl_Configure( void );
 
-/** Turn a combination of 2 LEDs with a unique blinking pattern */
-void vfnLedCtrl_BlinkingPattern(void);
+/** Turn a combination of LED 0 with a unique blinking pattern */
+void vfnLed0Ctrl_BlinkingPattern( void );
+
+/** Turn a combination of LED 1 with a unique blinking pattern */
+void vfnLed1Ctrl_BlinkingPattern( void );
 
 
 /**************************************************************************************************/

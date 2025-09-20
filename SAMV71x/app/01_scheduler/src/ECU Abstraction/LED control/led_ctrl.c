@@ -57,40 +57,76 @@ void vfnLedCtrl_Configure( void )
 
 /*****************************************************************************************************/
 /**
-* \brief    Turn a combination of 2 LEDs with a unique blinking pattern.
-			Call this function periodically @ 10ms to operate
-* \author   Abraham Tezmol
-* \param    void
-* \return   void
-*/
-void vfnLedCtrl_BlinkingPattern(void)
+ * @brief Turn a combination of LED 0 with a unique blinking pattern.
+ * 
+ */
+void vfnLed0Ctrl_BlinkingPattern( void )
 {
-/* Global state machine status for LED flashing control  */
+    //Global state machine status for LED flashing control
 	static uint8_t gu8Index;
 
-    (gu8Index)++;
+    gu8Index++;
     
-    switch ((gu8Index))
+    switch ( gu8Index )
     {
         case  1:
-            LED_Set(0);
-            LED_Set(1);
+            LED_Set( 0 );
             break;
-        case  11:
-            LED_Set(0);
-            LED_Set(1);
-            break;
+
         case  3:
-            LED_Clear(0);
-            LED_Clear(1);
+            LED_Clear( 0 );
             break;
+
+        case  11:
+            LED_Set( 0 );
+            break;
+
         case  13:
-            LED_Clear(0);
-            LED_Clear(1);
+            LED_Clear( 0 );
             break;
+
         case 101:
             gu8Index = 0;
             break;
+
+        default:
+            break;
+    }
+}
+
+/**
+ * @brief Turn a combination of LED 1 with a unique blinking pattern.
+ * 
+ */
+void vfnLed1Ctrl_BlinkingPattern( void )
+{
+    //Global state machine status for LED flashing control
+	static uint8_t gu8Index;
+
+    gu8Index++;
+    
+    switch ( gu8Index )
+    {
+        case  1:
+            LED_Set( 1 );
+            break;
+
+        case  3:
+            LED_Clear( 1 );
+            break;
+
+        case  11:
+            LED_Set( 1 );
+            break;
+
+        case  13:
+            LED_Clear( 1 );
+            break;
+
+        case 101:
+            gu8Index = 0;
+            break;
+            
         default:
             break;
     }
