@@ -25,23 +25,33 @@
 UINT8 gu8Scheduler_Status;
 UINT8 gu8Scheduler_Counter;
 
-tSchedulerTasks_ID TaskScheduler_Task_ID_Activated;
-tSchedulerTasks_ID TaskScheduler_Task_ID_Running;
-tSchedulerTasks_ID TasksScheduler_Task_ID_Backup;
+tSchedulerTimeTasks_ID TaskScheduler_Task_ID_Activated;
+tSchedulerTimeTasks_ID TaskScheduler_Task_ID_Running;
+tSchedulerTimeTasks_ID TasksScheduler_Task_ID_Backup;
 
 UINT8 u8_10ms_Counter;
 UINT8 u8_50ms_Counter;
 UINT8 u8_100ms_Counter;
 
-
+//TCB for time triggered tasks.
 tSchedulingTask TimeTriggeredTasks[TASK_SCH_MAX_NUMBER_TIME_TASKS] =
 { 
-    {TASKS_1_MS,  TASKS_LIST_1MS,  SUSPENDED, 5},
-    {TASKS_2_MS_A,TASKS_LIST_2MS_A,SUSPENDED, 4},
-    {TASKS_2_MS_B,TASKS_LIST_2MS_B,SUSPENDED, 4},
-    {TASKS_10_MS, TASKS_LIST_10MS, SUSPENDED, 3},
-    {TASKS_50_MS, TASKS_LIST_50MS, SUSPENDED, 2},
-    {TASKS_100_MS,TASKS_LIST_100MS,SUSPENDED, 1},
+    { TASKS_1_MS,  TASKS_LIST_1MS,  SUSPENDED, 5 },
+    { TASKS_2_MS_A,TASKS_LIST_2MS_A,SUSPENDED, 4 },
+    { TASKS_2_MS_B,TASKS_LIST_2MS_B,SUSPENDED, 4 },
+    { TASKS_10_MS, TASKS_LIST_10MS, SUSPENDED, 3 },
+    { TASKS_50_MS, TASKS_LIST_50MS, SUSPENDED, 2 },
+    { TASKS_100_MS,TASKS_LIST_100MS,SUSPENDED, 1 },
+};
+
+//TCB for priority triggered tasks.
+tPriorityTask PriorityTriggeredTasks[TASK_SCH_MAX_NUMBER_PRIORITY_TASKS] =
+{
+    { TASKP_1, TASK_1, 1 },
+    { TASKP_2, TASK_2, 2 },
+    { TASKP_3, TASK_3, 3 },
+    { TASKP_4, TASK_4, 4 },
+    { TASKP_5, TASK_5, 5 },
 };
 
 /*****************************************************************************************************
@@ -152,6 +162,29 @@ void vfnScheduler_TaskActivate( tSchedulingTask * Task )
 { 
     TaskScheduler_Task_ID_Activated = Task->TaskId;
     Task->enTaskState = READY;
+}
+
+/**
+ * @brief This function executes the schedule point from a time triggered task.
+ * @note Depending of the priority related to the time task a priority triggered task is called.
+ * 
+ */
+void vfnSchedulePoint( void )
+{
+    uint8_t PriorityToApply = 0;
+    uint8_t i = 0;
+
+    //Identify which priority apply.
+    PriorityToApply = TimeTriggeredTasks[TaskScheduler_Task_ID_Running].u8Priority;
+
+    //Executing all priority tasks related to the actual priority.
+    for ( i = 0; i < TASK_SCH_MAX_NUMBER_PRIORITY_TASKS; i++ )
+    {
+        if ( PriorityTriggeredTasks[i].Priority == PriorityToApply )
+        {   //Execute task.
+            PriorityTriggeredTasks[i].ptrTask();
+        }
+    }    
 }
 
 /*******************************************************************************/

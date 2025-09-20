@@ -35,16 +35,34 @@ typedef enum
     TASKS_50_MS,
     TASKS_100_MS,
     TASK_NULL,
-}tSchedulerTasks_ID;
+} tSchedulerTimeTasks_ID;
 
+//Prority tasks IDs.
+typedef enum 
+{
+    TASKP_1,
+    TASKP_2,
+    TASKP_3,
+    TASKP_4,
+    TASKP_5
+} tSchedulerPriorityTasks_ID;
+
+//Control structure for priority triggered tasks.
+typedef struct
+{
+    tSchedulerPriorityTasks_ID TaskId;
+    tPtr_to_function           ptrTask;
+    uint8_t                    Priority;
+} tPriorityTask;
+
+//Control structure for time triggered tasks.
 typedef struct 
 {
-    tSchedulerTasks_ID     TaskId;
+    tSchedulerTimeTasks_ID TaskId;  //Identifies and indicates task periodicity.
     tPtr_to_function       ptrTask;
     tTaskStates            enTaskState;
-    uint8_t                u8Priority;
-    
-}tSchedulingTask;
+    uint8_t                u8Priority;  //Priority related to task periodicity.
+} tSchedulingTask;
 
 /*****************************************************************************************************
 * Definition of module wide MACROS / #DEFINE-CONSTANTS 
@@ -61,12 +79,14 @@ typedef struct
 #define    TASK_SCHEDULER_HALTED            0xAAu
 
 #define    TASK_SCH_MAX_NUMBER_TIME_TASKS   0x06u
+#define    TASK_SCH_MAX_NUMBER_PRIORITY_TASKS   5
 
 #define    TASK_SCHEDULER_BASE_FREQ		    2000
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs
 *****************************************************************************************************/
 extern tSchedulingTask TimeTriggeredTasks[TASK_SCH_MAX_NUMBER_TIME_TASKS];
+extern tPriorityTask PriorityTriggeredTasks[TASK_SCH_MAX_NUMBER_PRIORITY_TASKS];
 
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONS
@@ -85,6 +105,9 @@ void vfnScheduler_Stop(void);
 
 /** Multi-thread round robin task scheduler */
 void vfnTask_Scheduler(void);
+
+// Schedule Point Function.
+void vfnSchedulePoint( void );
 
 /*******************************************************************************/
 
