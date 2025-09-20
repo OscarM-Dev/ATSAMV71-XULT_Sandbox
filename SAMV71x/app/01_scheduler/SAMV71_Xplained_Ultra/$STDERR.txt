@@ -1,8 +1,0 @@
-C:\Users\Familia\Documents\Especialidad_ITESO\Semestre_1\Sistemas_Embebidos\repos\ATSAMV71-XULT_Sandbox\SAMV71x\app\01_scheduler\src\main.c: In function 'main':
-C:\Users\Familia\Documents\Especialidad_ITESO\Semestre_1\Sistemas_Embebidos\repos\ATSAMV71-XULT_Sandbox\SAMV71x\app\01_scheduler\src\main.c:56:1: error: 'aa' undeclared (first use in this function)
- aa
- ^
-C:\Users\Familia\Documents\Especialidad_ITESO\Semestre_1\Sistemas_Embebidos\repos\ATSAMV71-XULT_Sandbox\SAMV71x\app\01_scheduler\src\main.c:56:1: note: each undeclared identifier is reported only once for each function it appears in
-C:\Users\Familia\Documents\Especialidad_ITESO\Semestre_1\Sistemas_Embebidos\repos\ATSAMV71-XULT_Sandbox\SAMV71x\app\01_scheduler\src\main.c:58:2: error: expected ';' before 'for'
-  for(;;)
-  ^

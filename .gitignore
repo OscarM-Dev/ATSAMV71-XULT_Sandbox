@@ -1,0 +1,18 @@
+#Ignoring all compilation and temporary files.
+/SAMV71x/app/01_scheduler/SAMV71_Xplained_Ultra/*
+!/SAMV71x/app/01_scheduler/SAMV71_Xplained_Ultra/*.slo
+!/SAMV71x/app/01_scheduler/SAMV71_Xplained_Ultra/*.xjrf
+!/SAMV71x/app/01_scheduler/SAMV71_Xplained_Ultra/*.xqrf
+!/SAMV71x/app/01_scheduler/SAMV71_Xplained_Ultra/*.ini
+
+/SAMV71x/app/FreeRTOS_Blinky_Full/SAMV71_Xplained_Ultra/*
+!/SAMV71x/app/FreeRTOS_Blinky_Full/SAMV71_Xplained_Ultra/*.slo
+!/SAMV71x/app/FreeRTOS_Blinky_Full/SAMV71_Xplained_Ultra/*.xjrf
+!/SAMV71x/app/FreeRTOS_Blinky_Full/SAMV71_Xplained_Ultra/*.xqrf
+!/SAMV71x/app/FreeRTOS_Blinky_Full/SAMV71_Xplained_Ultra/*.ini
+
+/SAMV71x/app/getting_started/SAMV71_Xplained_Ultra/*
+!/SAMV71x/app/getting_started/SAMV71_Xplained_Ultra/*.slo
+!/SAMV71x/app/getting_started/SAMV71_Xplained_Ultra/*.xjrf
+!/SAMV71x/app/getting_started/SAMV71_Xplained_Ultra/*.xqrf
+!/SAMV71x/app/getting_started/SAMV71_Xplained_Ultra/*.ini
