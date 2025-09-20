@@ -39,9 +39,8 @@
  */
 extern int main( void )
 {
-	
 	/* Disable watchdog */
-	//vfnWdtCtrl_Disable();
+	vfnWdtCtrl_Disable();
 	/* Enable I and D cache */
 	SCB_EnableICache();
 	/* SCB_EnableDCache(); */

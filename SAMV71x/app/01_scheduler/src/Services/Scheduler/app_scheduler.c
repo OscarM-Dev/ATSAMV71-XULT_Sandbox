@@ -60,6 +60,15 @@ void vfnScheduler_Callback(void);
 
 /****************************************************************************************************/
 /**
+ * @brief This function disables the MCU watchdog.
+ * 
+ */
+void vfnWdtCtrl_Disable( void )
+{
+    WDT_Disable( WDT );
+}
+
+/**
 * \brief    Scheduler - Initialization
 * \author   Abraham Tezmol
 * \param    void

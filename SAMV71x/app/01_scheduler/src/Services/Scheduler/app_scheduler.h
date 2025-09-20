@@ -71,6 +71,8 @@ extern tSchedulingTask TimeTriggeredTasks[TASK_SCH_MAX_NUMBER_TIME_TASKS];
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONS
 *****************************************************************************************************/
+//Watchdog disable function.
+void vfnWdtCtrl_Disable( void );
 
 /** Scheduler Initalization (arming) */
 void vfnScheduler_Init(void);
