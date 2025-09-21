@@ -39,7 +39,8 @@ static const Pin pinPB1 = PIN_PUSHBUTTON_0;
 static void _Button_Handler( const Pin* pPin )
 {
 	if ( pPin == &pinPB1 ) {
-		printf("Button SW0 event confirmed\n\r");
+		vfnCycleLed1Priority();
+		printf("Button pressed: LED1 new priority = %u\n\r", u8GetLed1Priority());
 	}
 }
 

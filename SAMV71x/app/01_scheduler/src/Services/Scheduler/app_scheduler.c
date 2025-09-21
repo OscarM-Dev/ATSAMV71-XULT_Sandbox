@@ -187,6 +187,41 @@ void vfnSchedulePoint( void )
     }    
 }
 
+/* As soon as the button gets pressed will review the priority of task1 where led1 is at
+   And will increase the priority */
+void vfnCycleLed1Priority(void)
+{
+    uint8_t i;
+
+    /* Find TASKP_1 entry */
+    for (i = 0; i < TASK_SCH_MAX_NUMBER_PRIORITY_TASKS; i++)
+    {
+        if (PriorityTriggeredTasks[i].TaskId == TASKP_1)
+        {
+            uint8_t cur = PriorityTriggeredTasks[i].Priority;
+            uint8_t next = (cur < TASK_SCH_MAX_NUMBER_PRIORITY_TASKS) ? (cur + 1u) : 1u;
+            PriorityTriggeredTasks[i].Priority = next;
+            break;
+        }
+    }
+}
+
+/* Function for debug to recall the current LED1 priority */
+uint8_t u8GetLed1Priority(void)
+{
+    uint8_t i;
+
+    /* Find TASKP_1 entry */
+    for (i = 0; i < TASK_SCH_MAX_NUMBER_PRIORITY_TASKS; i++)
+    {
+        if (PriorityTriggeredTasks[i].TaskId == TASKP_1)
+        {
+            return PriorityTriggeredTasks[i].Priority;
+        }
+    }
+    return 0u;
+}
+
 /*******************************************************************************/
 /**
 * \brief    Multi-thread round robin task Scheduler  (non-preemtive)        \n

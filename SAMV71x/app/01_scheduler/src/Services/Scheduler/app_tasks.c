@@ -51,6 +51,8 @@ void TASKS_LIST_2MS_B( void )
 /* List of tasks to be executed @ 10ms */
 void TASKS_LIST_10MS( void )
 {
+    /* Led0 has a fixed task */
+    vfnLed0Ctrl_BlinkingPattern();
     vfnSchedulePoint();
 }
 /* List of tasks to be executed @ 50ms */
@@ -73,6 +75,7 @@ void TASKS_LIST_100MS( void )
  */
 void TASK_1( void )
 {
+    /* Led1 executes in the TASK_1 */
     vfnLed1Ctrl_BlinkingPattern();
     dummy_counters_tasks[TASKP_1]++;
 }
@@ -92,7 +95,6 @@ void TASK_2( void )
  */
 void TASK_3( void )
 {
-    vfnLed0Ctrl_BlinkingPattern();
     dummy_counters_tasks[TASKP_3]++;
 }
 

@@ -109,6 +109,12 @@ void vfnTask_Scheduler(void);
 // Schedule Point Function.
 void vfnSchedulePoint( void );
 
+// Event to change led1 priority
+void vfnCycleLed1Priority(void);
+
+// Gets the current priority assigned to LED1
+uint8_t u8GetLed1Priority(void);
+
 /*******************************************************************************/
 
 #endif /* APP_SCHEDULER_H */
