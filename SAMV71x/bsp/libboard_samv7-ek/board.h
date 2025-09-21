@@ -130,7 +130,6 @@
 
 /** Name of the board */
 #define BOARD_NAME "SAM V71 Xplained Ultra"
-#define NO_PUSHBUTTON
 /*----------------------------------------------------------------------------*/
 /**
  *  \page samv7_Xplained_ultra_opfreq "SAM V71 Xplained Ultra - Operating frequencies"
