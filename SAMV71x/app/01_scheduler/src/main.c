@@ -21,6 +21,8 @@
 #include    "app_scheduler.h"
 /** LED control definitions */ 
 #include    "led_ctrl.h"
+//Memory allocation handler.
+#include	"Mem_Alloc.h"
 
 /*~~~~~~  Local definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
