@@ -133,6 +133,16 @@ SECTIONS
         _eheap = .;
     } > ram
 
+    /* Memory allocator heap section */
+    .heap_memalloc (NOLOAD):
+    {
+        . = ALIGN(4);
+        _heap_mem_start = .;
+        . = . + heap_memsize;
+        . = ALIGN(4);
+        _heap_mem_end = .;
+    } > heap_memalloc
+
     . = ALIGN(4);
     _end = . ;
     _ram_end_ = ORIGIN(ram) + LENGTH(ram) -1 ;
