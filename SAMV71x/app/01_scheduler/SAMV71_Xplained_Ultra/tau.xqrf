@@ -79,25 +79,29 @@
       <SubDir>0</SubDir>
      </IncludePath.1>
      <IncludePath.10>
-      <Path>$(IRFDIR)..\src\Services\Scheduler</Path>
+      <Path>$(IRFDIR)..\src\Services\Memory_Allocation\src</Path>
       <SubDir>0</SubDir>
      </IncludePath.10>
      <IncludePath.11>
-      <Path>$(IRFDIR)..\src\ECU Abstraction\LED control</Path>
+      <Path>$(IRFDIR)..\src\Services\Memory_Allocation\include</Path>
       <SubDir>0</SubDir>
      </IncludePath.11>
      <IncludePath.12>
-      <Path>$(IRFDIR)..\src\Commons</Path>
+      <Path>$(IRFDIR)..\src\Services\Scheduler</Path>
       <SubDir>0</SubDir>
      </IncludePath.12>
      <IncludePath.13>
-      <Path>$(IRFDIR)..\src\Services\Memory</Path>
+      <Path>$(IRFDIR)..\src\ECU Abstraction\LED control</Path>
       <SubDir>0</SubDir>
      </IncludePath.13>
      <IncludePath.14>
-      <Path>$(IRFDIR)..\src</Path>
+      <Path>$(IRFDIR)..\src\Commons</Path>
       <SubDir>0</SubDir>
      </IncludePath.14>
+     <IncludePath.15>
+      <Path>$(IRFDIR)..\src</Path>
+      <SubDir>0</SubDir>
+     </IncludePath.15>
      <IncludePath.2>
       <Path>$(IRFDIR)..\..\..\hal\libchip_samv7\include</Path>
       <SubDir>0</SubDir>
@@ -167,6 +171,42 @@
        <CompilerOptionsWR>True</CompilerOptionsWR>
       </FileOptios>
       <LinkGroup.0>
+       <LinkGroupName>Services</LinkGroupName>
+       <File.0>
+        <FileName>$(IRFDIR)..\src\Services\Scheduler\app_tasks.h</FileName>
+       </File.0>
+       <File.1>
+        <FileName>$(IRFDIR)..\src\Services\Scheduler\app_scheduler.c</FileName>
+        <FileOptios>
+         <CompilerDefines>__SAMV71Q21__</CompilerDefines>
+         <CompilerOptions>-x c  -mcpu=cortex-m7  -mthumb -mfloat-abi=softfp -mfpu=fpv5-sp-d16 $(DEFINES) $(INCLUDES)  -g3 -c -I $(IRFDIR) -o $(NOEXT).o $(EDNAME) -fno-builtin-fabs -save-temps=obj -o $(OUTPUTDIR)$(NOEXT).o</CompilerOptions>
+        </FileOptios>
+       </File.1>
+       <File.2>
+        <FileName>$(IRFDIR)..\src\Services\Scheduler\app_scheduler.h</FileName>
+       </File.2>
+       <File.3>
+        <FileName>$(IRFDIR)..\src\Services\Scheduler\app_tasks.c</FileName>
+        <FileOptios>
+         <CompilerDefines>__SAMV71Q21__</CompilerDefines>
+         <CompilerOptions>-x c  -mcpu=cortex-m7  -mthumb -mfloat-abi=softfp -mfpu=fpv5-sp-d16 $(DEFINES) $(INCLUDES)  -g3 -c -I $(IRFDIR) -o $(NOEXT).o $(EDNAME) -fno-builtin-fabs -save-temps=obj -o $(OUTPUTDIR)$(NOEXT).o</CompilerOptions>
+        </FileOptios>
+       </File.3>
+       <File.4>
+        <FileName>$(IRFDIR)..\src\Services\Memory_Allocation\src\Mem_Alloc.c</FileName>
+        <FileOptios>
+         <CompilerDefines>__SAMV71Q21__</CompilerDefines>
+         <CompilerOptions>-x c  -mcpu=cortex-m7  -mthumb -mfloat-abi=softfp -mfpu=fpv5-sp-d16 $(DEFINES) $(INCLUDES)  -g3 -c -I $(IRFDIR) -o $(NOEXT).o $(EDNAME) -fno-builtin-fabs -save-temps=obj -o $(OUTPUTDIR)$(NOEXT).o</CompilerOptions>
+        </FileOptios>
+       </File.4>
+       <File.5>
+        <FileName>$(IRFDIR)..\src\Services\Memory_Allocation\include\Mem_Alloc.h</FileName>
+       </File.5>
+       <File.6>
+        <FileName>$(IRFDIR)..\src\Services\Memory_Allocation\include\Mem_AllocTypes.h</FileName>
+       </File.6>
+      </LinkGroup.0>
+      <LinkGroup.1>
        <LinkGroupName>Source files</LinkGroupName>
        <File.0>
         <FileName>$(IRFDIR)..\src\main.c</FileName>
@@ -206,29 +246,6 @@
          <CompilerOptions>-x c  -mcpu=cortex-m7  -mthumb -mfloat-abi=softfp -mfpu=fpv5-sp-d16 $(DEFINES) $(INCLUDES)  -g3 -c -I $(IRFDIR) -o $(NOEXT).o $(EDNAME) -fno-builtin-fabs -save-temps=obj -o $(OUTPUTDIR)$(NOEXT).o</CompilerOptions>
         </FileOptios>
        </File.5>
-      </LinkGroup.0>
-      <LinkGroup.1>
-       <LinkGroupName>Services</LinkGroupName>
-       <File.0>
-        <FileName>$(IRFDIR)..\src\Services\Scheduler\app_tasks.h</FileName>
-       </File.0>
-       <File.1>
-        <FileName>$(IRFDIR)..\src\Services\Scheduler\app_scheduler.c</FileName>
-        <FileOptios>
-         <CompilerDefines>__SAMV71Q21__</CompilerDefines>
-         <CompilerOptions>-x c  -mcpu=cortex-m7  -mthumb -mfloat-abi=softfp -mfpu=fpv5-sp-d16 $(DEFINES) $(INCLUDES)  -g3 -c -I $(IRFDIR) -o $(NOEXT).o $(EDNAME) -fno-builtin-fabs -save-temps=obj -o $(OUTPUTDIR)$(NOEXT).o</CompilerOptions>
-        </FileOptios>
-       </File.1>
-       <File.2>
-        <FileName>$(IRFDIR)..\src\Services\Scheduler\app_scheduler.h</FileName>
-       </File.2>
-       <File.3>
-        <FileName>$(IRFDIR)..\src\Services\Scheduler\app_tasks.c</FileName>
-        <FileOptios>
-         <CompilerDefines>__SAMV71Q21__</CompilerDefines>
-         <CompilerOptions>-x c  -mcpu=cortex-m7  -mthumb -mfloat-abi=softfp -mfpu=fpv5-sp-d16 $(DEFINES) $(INCLUDES)  -g3 -c -I $(IRFDIR) -o $(NOEXT).o $(EDNAME) -fno-builtin-fabs -save-temps=obj -o $(OUTPUTDIR)$(NOEXT).o</CompilerOptions>
-        </FileOptios>
-       </File.3>
       </LinkGroup.1>
       <LinkGroup.2>
        <LinkGroupName>Toolset</LinkGroupName>
