@@ -14,6 +14,7 @@
 /* ************************************************************************** */
 /* Public function prototypes  
 /* ************************************************************************** */
+void Mem_Init(void);
 MemReturnType Mem_Alloc( MemSizeType Size );
 
 #endif

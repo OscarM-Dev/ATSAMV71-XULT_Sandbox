@@ -18,11 +18,32 @@
 /* ************************************************************************** */
 /* Private data.  
 /* ************************************************************************** */
-static MemHandlerType MemControl;
+
+/* External linker symbols for heap memory allocation */
+extern uint8_t _heap_mem_start;
+extern uint8_t _heap_mem_end;
+
+/* Initialize MemControl with linker symbols */
+static MemHandlerType MemControl = {
+    .MemStart  = (uint8_t *) &_heap_mem_start,  /* Sets the start of the heap memory */
+    .MemEnd    = (uint8_t *) &_heap_mem_end,    /* Sets the end of the heap memory */
+    .CurrAddr  = (uint8_t *) &_heap_mem_start,  /* Initialize the current start address */
+    .FreeBytes = 0  /* Will be calculated during initialization */
+};
 
 /* ************************************************************************** */
 /* Functions.  
 /* ************************************************************************** */
+
+/**
+ * @brief Initialize the Memory Allocator with correct heap size.
+ * @note This function should be called once during system initialization.
+ */
+void Mem_Init(void)
+{
+    /* Calculate initial free bytes based on linker symbols */
+    MemControl.FreeBytes = (uint32_t)(MemControl.MemEnd - MemControl.MemStart);
+}
 /**
  * @brief This function allocates memory space in heap_memalloc.
  * @note All memory spaces are contiguous. 

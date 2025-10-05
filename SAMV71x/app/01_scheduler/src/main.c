@@ -21,8 +21,8 @@
 #include    "app_scheduler.h"
 /** LED control definitions */ 
 #include    "led_ctrl.h"
-//Memory allocation handler.
-#include	"Mem_Alloc.h"
+/** Memory Allocator definitions */
+#include    "Mem_Alloc.h"
 
 /*~~~~~~  Local definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -67,6 +67,78 @@ static void _ConfigureButtons( void )
 	PIO_EnableIt( &pinPB1 ) ;
 }
 
+/**
+ * @brief Comprehensive test for Memory Allocator and Linker configuration
+ */
+static void memory_allocator_test(void)
+{
+    printf("\n\r=== MEMORY ALLOCATOR TEST START ===\n\r");
+    
+    /* Initialize Memory Allocator */
+    Mem_Init();
+    printf("Memory Allocator initialized\n\r");
+    
+    /* Test 1: Small allocation */
+    printf("\nTest 1: Allocating 64 bytes...\n\r");
+    void *ptr1 = Mem_Alloc(64);
+    if (ptr1 != NULL) {
+        printf("SUCCESS: Allocated 64 bytes at 0x%08X\n\r", (uint32_t)ptr1);
+        
+        /* Write test pattern */
+        *(uint32_t*)ptr1 = 0xDEADBEEF;
+        if (*(uint32_t*)ptr1 == 0xDEADBEEF) {
+            printf("SUCCESS: Memory write/read test passed\n\r");
+        } else {
+            printf("ERROR: Memory write/read test failed\n\r");
+        }
+    } else {
+        printf("ERROR: Failed to allocate 64 bytes\n\r");
+    }
+    
+    /* Test 2: Medium allocation */
+    printf("\nTest 2: Allocating 256 bytes...\n\r");
+    void *ptr2 = Mem_Alloc(256);
+    if (ptr2 != NULL) {
+        printf("SUCCESS: Allocated 256 bytes at 0x%08X\n\r", (uint32_t)ptr2);
+    } else {
+        printf("ERROR: Failed to allocate 256 bytes\n\r");
+    }
+    
+    /* Test 3: Large allocation */
+    printf("\nTest 3: Allocating 1024 bytes...\n\r");
+    void *ptr3 = Mem_Alloc(1024);
+    if (ptr3 != NULL) {
+        printf("SUCCESS: Allocated 1024 bytes at 0x%08X\n\r", (uint32_t)ptr3);
+    } else {
+        printf("ERROR: Failed to allocate 1024 bytes\n\r");
+    }
+    
+    /* Test 4: Check alignment */
+    printf("\nTest 4: Checking 32-bit alignment...\n\r");
+    if (ptr1 && ((uint32_t)ptr1 % 4 == 0)) {
+        printf("SUCCESS: ptr1 is 32-bit aligned\n\r");
+    } else {
+        printf("ERROR: ptr1 is not 32-bit aligned\n\r");
+    }
+    
+    if (ptr2 && ((uint32_t)ptr2 % 4 == 0)) {
+        printf("SUCCESS: ptr2 is 32-bit aligned\n\r");
+    } else {
+        printf("ERROR: ptr2 is not 32-bit aligned\n\r");
+    }
+    
+    /* Test 5: Try to allocate more than available */
+    printf("\nTest 5: Trying to allocate 5000 bytes (should fail)...\n\r");
+    void *ptr4 = Mem_Alloc(5000);
+    if (ptr4 == NULL) {
+        printf("SUCCESS: Large allocation correctly failed\n\r");
+    } else {
+        printf("ERROR: Large allocation should have failed\n\r");
+    }
+    
+    printf("\n=== MEMORY ALLOCATOR TEST END ===\n\r");
+}
+
 /*----------------------------------------------------------------------------
  *        Exported functions
  *----------------------------------------------------------------------------*/
@@ -77,6 +149,7 @@ static void _ConfigureButtons( void )
  */
 extern int main( void )
 {
+	
 	/* Disable watchdog */
 	vfnWdtCtrl_Disable();
 
@@ -100,6 +173,9 @@ extern int main( void )
 
 	/* Configure button interrupts */
 	_ConfigureButtons();
+
+	/* Test Memory Allocator functionality */
+	memory_allocator_test();
 
 	/* Once all the basic services have been started, go to infinite loop to serviced activated tasks */
 	for(;;)
