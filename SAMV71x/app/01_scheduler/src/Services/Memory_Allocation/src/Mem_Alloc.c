@@ -20,8 +20,8 @@
 /* ************************************************************************** */
 
 /* External linker symbols for heap memory allocation */
-extern uint8_t _heap_mem_start;
-extern uint8_t _heap_mem_end;
+extern uint32_t _heap_mem_start;
+extern uint32_t _heap_mem_end;
 
 /* Initialize MemControl with linker symbols */
 static MemHandlerType MemControl = {
