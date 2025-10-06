@@ -29,6 +29,8 @@
 
 
 #include "samv71.h"
+#include <stdint.h>
+#include <string.h>
 
 /* Initialize segments */
 extern uint32_t _sfixed;
@@ -40,6 +42,17 @@ extern uint32_t _szero;
 extern uint32_t _ezero;
 extern uint32_t _sstack;
 extern uint32_t _estack;
+
+extern uint8_t _heap_mem_start;
+extern uint8_t _heap_mem_end;
+
+static void ZeroHeapMemalloc(void)
+{
+    uint8_t *p = &_heap_mem_start;
+    while (p < &_heap_mem_end) {
+        *p++ = 0;
+    }
+}
 
 /** \cond DOXYGEN_SHOULD_SKIP_THIS */
 int main(void);
@@ -380,6 +393,9 @@ void Reset_Handler(void)
 		LowLevelInit();
 		/* Initialize the C library */
 //		__libc_init_array();
+		
+		/* Initialize heap memory allocator */
+		ZeroHeapMemalloc();
 
 		/* Branch to main function */
 		main();
