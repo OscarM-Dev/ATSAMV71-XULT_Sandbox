@@ -23,8 +23,6 @@
 #include    "SchM_Tasks.h"
 /* LED control definitions */ 
 #include    "Led_Ctrl.h"
-/* Uart Functions */
-#include    "Uart_Ctrl.h"
 
 /*****************************************************************************************************
 * Definition of  VARIABLEs - 
@@ -48,7 +46,7 @@ void SchM_Task_1ms( void )
 /* List of tasks to be executed @ 2ms, first group */
 void SchM_Task_2ms_A(void)
 {
-  UartCtrl_2ms();		
+
 }
 
 /* List of tasks to be executed @ 2ms, second group */
@@ -66,18 +64,17 @@ void SchM_Task_10ms( void )
 /* List of tasks to be executed @ 50ms */
 void SchM_Task_50ms( void )
 {
-	UartCtrl_50ms();
+
 }
 
 /* List of tasks to be executed @ 100ms */
 void SchM_Task_100ms( void )
 { 
-  UartCtrl_100ms();
+
 }
 
 /* List of tasks to be executed @ SW0 */
 void SchM_Task_SW0( void )
 {
   LedCtrl_ToogleBlinkingPattern();
-  UartCtrl_TriggerEvent();
 }

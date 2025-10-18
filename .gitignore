@@ -22,3 +22,4 @@
 !/SAMV71x/app/08_UartBase/SAMV71_Xplained_Ultra/*.xjrf
 !/SAMV71x/app/08_UartBase/SAMV71_Xplained_Ultra/*.xqrf
 !/SAMV71x/app/08_UartBase/SAMV71_Xplained_Ultra/*.ini
+/SAMV71x/app/08_UartBase/src/Objects/*.o
