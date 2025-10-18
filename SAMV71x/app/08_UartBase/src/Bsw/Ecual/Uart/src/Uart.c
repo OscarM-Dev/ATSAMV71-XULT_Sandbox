@@ -1,99 +1,70 @@
 /*******************************************************************************/
 /**
-\file       
-\brief      
-   \~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   \version       1.0
-   \author        
-   \description   
-   \date          
-*/
+ * \file       Uart.c
+ * \brief      ECUAL UART (TX only) - multi-instance, interrupt-driven
+ * \version    1.0
+ */
+/*******************************************************************************/
 
-/** Scheduler function prototypes definitions */
 #include "Uart.h"
 #include "MemAlloc.h"
 
+/* ===================== MCAL interface ===================== */
+typedef enum { MCAL_UART_OK=0, MCAL_UART_ERR } McalUartRet;
 
-/*****************************************************************************************************
-* Defines - 
-*****************************************************************************************************/
+extern McalUartRet Uart_Init            (UartChannelType ch);
+extern McalUartRet Uart_SetBaudrate     (UartChannelType ch, Uart_BaudrateType baud);
+extern McalUartRet Uart_SetTxEnable     (UartChannelType ch, uint32 Enable);
+extern void        Uart_EnableInterrupt (UartChannelType ch, uint32 mask);
+extern void        Uart_DisableInterrupt(UartChannelType ch, uint32 mask);
+extern boolean     Uart_IsTxReady       (UartChannelType ch);
+extern void        Uart_WriteDR         (UartChannelType ch, uint8 byte);
+extern boolean     Uart_Int_TxRdy       (UartChannelType ch);
+extern void        Uart_IntClr_TxRdy    (UartChannelType ch);
 
-#define UART_CHANNEL_UNDEF (255)
 
-#define UART_CH0  (0) 
-#define UART_CH1  (1)
-#define UART_CH2  (2)
-#define UART_CH3  (3)
-#define UART_CH4  (4)
+static UartStatusType * gUartSt = NULL;
+static const UartConfigType * gCfg = NULL;
 
-/*****************************************************************************************************
-* Definition of  VARIABLEs - 
-*****************************************************************************************************/
-
-/* Uart Status Structure Example */
-UartStatusType *UartStatus;
-  
-
-/*****************************************************************************************************
-* Definition of module wide (CONST-) CONSTANTs 
-*****************************************************************************************************/
-/* Array of Uart Register Base Address */
-static const Uart * UartRegAddr[]={ UART0, UART1, UART2, UART3, UART4 };
-
-/*****************************************************************************************************
-* Code of module wide Private FUNCTIONS
-*****************************************************************************************************/
-
-uint8_t Uart_GetLogChannel(uint8_t PhyChannel)
+UartErrorType Uart_Init(const UartConfigType * Cfg)
 {
-  uint8_t LogicalChannel = UART_CHANNEL_UNDEF; 
-  uint8_t LocChIdx = 0; /* LocChIdx represent the logical channel */
-  /* UART_CFG_CHANNELS represents the number of configured channels from configuration structure */
-  do
-  {
-    if (UartStatus[LocChIdx].ChannelId == PhyChannel)
-    {
-      LogicalChannel = LocChIdx; 
-    }
-    LocChIdx++;
-  }while( (UartStatus[LocChIdx-1].ChannelId != PhyChannel) && (LocChIdx < UART_CFG_CHANNELS) );
-  return (LogicalChannel);
+  printf("TODO: Uart_Init()\n");
 }
 
-/*****************************************************************************************************
-* Code of module wide Public FUNCTIONS
-*****************************************************************************************************/
-
-void Uart_Init(  const uint8_t * ChannelConfigure )
+UartErrorType Uart_SetBaudrate(UartChannelType Ch, Uart_BaudrateType Baud)
 {
-  const Uart * LocUartReg;
-  uint8_t LocChIdx = 0; /* LocChIdx represent the logical channel */
-   
-  /* Memory allocation for all Channel Status example */
-  /* UART_CFG_CHANNELS represents the number of configured channels from configuration structure */
-  UartStatus = (UartStatusType*) MemAlloc( sizeof(UartStatusType) * UART_CFG_CHANNELS  );  
-  
-  for (LocChIdx = 0; LocChIdx < UART_CFG_CHANNELS; LocChIdx++)
-  {
-    /* Point to register address based of physical channel */
-    LocUartReg = UartRegAddr[ChannelConfigure[LocChIdx]];
-    /* Access to register for the configured channel with LocUartReg */
-    /* Access to channel status structure with LocChIdx */
-    UartStatus[LocChIdx].ChannelId = ChannelConfigure[LocChIdx];    
-  }
+  printf("TODO: Uart_SetBaudrate()\n");
 }
 
-void Uart_Send(uint8_t Channel)
+UartErrorType Uart_SetTxEnable(UartChannelType Ch, uint32 Enable)
 {
-  const Uart * LocUartReg = UartRegAddr[UartStatus[Channel].ChannelId];
-  /* Example Code */
-  UartStatus[Channel].Counter++;
+  printf("TODO: Uart_SetTxEnable()\n");
 }
 
+UartErrorType Uart_SendByte(UartChannelType Ch, uint8 Byte)
+{
+  printf("TODO: Uart_SendByte()\n");  
+}
 
-/*****************************************************************************************************
-* Code of module wide Interrupt Handler FUNCTIONS
-*****************************************************************************************************/
+UartErrorType Uart_SendBuffer(UartChannelType Ch, const uint8 * Buf, uint16 Len)
+{
+  printf("TODO: Uart_SendBuffer()\n");
+}
+
+UartErrorType Uart_GetByte(UartChannelType Ch)
+{
+  printf("TODO: Uart_GetByte()\n");
+}
+
+UartErrorType Uart_GetStatus(UartChannelType Ch)
+{
+  printf("TODO: Uart_GetStatus()\n");
+}
+
+UartErrorType Uart_EnableInt(UartChannelType Ch, uint32_t IntMode, uint8_t Enable)
+{
+  printf("TODO: Uart_EnableInt()\n");
+}
 
 void Uart_Isr( uint8_t Channel )
 {
@@ -107,32 +78,9 @@ void Uart_Isr( uint8_t Channel )
 	    
 }
 
-
-void UART0_Handler(void)
-{
-	Uart_Isr(UART_CH0);
-}
-
-
-void UART1_Handler(void)
-{
-	Uart_Isr(UART_CH1);
-}
-
-
-void UART2_Handler(void)
-{
-	Uart_Isr(UART_CH2);
-}
-
-
-void UART3_Handler(void)
-{
-	Uart_Isr(UART_CH3);
-}
-
-
-void UART4_Handler(void)
-{
-	Uart_Isr(UART_CH4);
-}
+/* ===================== Handlers físicos ===================== */
+void UART0_Handler(void){ Uart_Isr(UART_CH0); }
+void UART1_Handler(void){ Uart_Isr(UART_CH1); }
+void UART2_Handler(void){ Uart_Isr(UART_CH2); }
+void UART3_Handler(void){ Uart_Isr(UART_CH3); }
+void UART4_Handler(void){ Uart_Isr(UART_CH4); }
