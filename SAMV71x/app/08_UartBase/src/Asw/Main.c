@@ -63,7 +63,7 @@ extern int main( void )
   
     /* Uart Inititalization */
     printf( "-- Uart Initialization --\n\r" ) ;
-    Uart_Init(&UartConfiguredChannels[0]);
+    //Uart_Init(&UartConfiguredChannels[0]);
   
 	/* Scheduler Inititalization */
 	printf( "-- Scheduler Initialization --\n\r" ) ;
