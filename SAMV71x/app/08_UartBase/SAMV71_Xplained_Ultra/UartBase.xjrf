@@ -49,7 +49,8 @@
       </History>
       <PI.0>
        <Bookmarks_num_>0</Bookmarks_num_>
-       <L>336</L>
+       <C>43</C>
+       <L>349</L>
        <P>..\..\..\toolset\gcc\startup_sam.c</P>
        <VL>347</VL>
       </PI.0>
@@ -2045,21 +2046,15 @@
        </Items.0>
       </OSWindow>
       <ProjectWindow>
-       <Selected>Bsw</Selected>
+       <Selected></Selected>
        <Items.0>
         <__>
          <Name>Files</Name>
-         <Options>5</Options>
+         <Options>1</Options>
          <Items.0>
           <__>
            <Name>Asw</Name>
-           <Options>5</Options>
-           <Items.0>
-            <__>
-             <Name>Button_Ctrl.c</Name>
-             <Options>4</Options>
-            </__>
-           </Items.0>
+           <Options>1</Options>
           </__>
          </Items.0>
          <Items.1>
@@ -2077,7 +2072,7 @@
          <Items.2>
           <__>
            <Name>Bsw</Name>
-           <Options>1</Options>
+           <Options>5</Options>
            <Items.0>
             <__>
              <Name>SchM_Cfg.c</Name>
@@ -2088,11 +2083,11 @@
          </Items.2>
          <Items.3>
           <__>
-           <Name>HAL</Name>
+           <Name>ObjectFiles</Name>
            <Options>1</Options>
            <Items.0>
             <__>
-             <Name>exceptions.c</Name>
+             <Name>MemAlloc.o</Name>
              <Options>4</Options>
             </__>
            </Items.0>
@@ -2100,22 +2095,28 @@
          </Items.3>
          <Items.4>
           <__>
-           <Name>ObjectFiles</Name>
+           <Name>Source files</Name>
            <Options>1</Options>
+           <Items.0>
+            <__>
+             <Name>readme.txt</Name>
+             <Options>4</Options>
+            </__>
+           </Items.0>
           </__>
          </Items.4>
          <Items.5>
           <__>
-           <Name>Source files</Name>
-           <Options>1</Options>
-          </__>
-         </Items.5>
-         <Items.6>
-          <__>
            <Name>Toolset</Name>
            <Options>1</Options>
+           <Items.0>
+            <__>
+             <Name>sam_flash.ld</Name>
+             <Options>4</Options>
+            </__>
+           </Items.0>
           </__>
-         </Items.6>
+         </Items.5>
         </__>
        </Items.0>
       </ProjectWindow>
