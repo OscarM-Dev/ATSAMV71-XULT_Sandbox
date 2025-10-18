@@ -27,7 +27,31 @@
 /* EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                           */
 /* ---------------------------------------------------------------------------- */
 
-INPUT (& &)
+INPUT (C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\system_sam.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\syscalls.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\startup_sam.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\dbg_console.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\board_lowlevel.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\board_memories.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\led.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\wdt.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\pmc.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\pio.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\pio_it.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\supc.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\exceptions.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\mpu.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\Main.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\Led_Ctrl.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\Button_Ctrl.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\Uart_Ctrl.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\SchM_Tasks.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\Wdg.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\SchM_Cfg.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\Uart_Cfg.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\SAMV71_Xplained_Ultra\Debug\Uart.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\src\Objects\MemAlloc.o 
+C:\ATSAMV71-XULT_Sandbox\SAMV71x\app\08_UartBase\src\Objects\SchM.o)
 
 /*------------------------------------------------------------------------------
  *      Linker script for running in internal FLASH on the ATSAMV71Q21
