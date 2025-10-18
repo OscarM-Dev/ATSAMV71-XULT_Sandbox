@@ -23,6 +23,8 @@
 #include    "SchM_Tasks.h"
 /* LED control definitions */ 
 #include    "Led_Ctrl.h"
+/* UART mini tester */
+#include    "UartMiniTester.h"
 
 /*****************************************************************************************************
 * Definition of  VARIABLEs - 
@@ -59,6 +61,7 @@ void SchM_Task_2ms_B( void )
 void SchM_Task_10ms( void )
 {
   LedCtrl_BlinkingPattern();
+  UartMiniTester_10ms();
 }
 
 /* List of tasks to be executed @ 50ms */
