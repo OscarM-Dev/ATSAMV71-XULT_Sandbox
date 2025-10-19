@@ -14,7 +14,9 @@
 
 /** Standard Types */
 #include "Std_Types.h"
-
+/* ************************************************************************** */
+/* Uart Types. 
+/* ************************************************************************** */
 /* Error type */
 typedef enum
 {
@@ -28,27 +30,46 @@ typedef void (*UartNotification)(uint8_t channel);
 typedef void (*UartErrorNotification)(uint8_t channel, UartErrorType error);
 
 typedef uint8_t UartChannelType;
+typedef uint32_t Uart_BaudrateType;
 
+/* ************************************************************************** */
+/* Control and configuration structures. 
+/* ************************************************************************** */
+/**
+ * @brief Tx control structure for each channel. 
+ * 
+ */
 typedef struct
 {
-  UartChannelType physicalChannel;
-  uint32_t baudrate;
-  uint8_t parity;
-  uint8_t stopBits;
+
+} UartChannelTxType;
+
+/**
+ * @brief Configuration structure for each UART channel.
+ * 
+ */
+typedef struct 
+{
+  uint8_t                 ChannelId;
+  uint8_t                 IsrEn;
+  uint8_t                 Mode;
+  uint8_t                 Parity;
+  uint32_t                Baudrate;
+  UartNotification      TxNotification;
+  UartNotification      RxNotification;
+  UartErrorNotification ErrorNotification;
 } UartChannelCfgType;
 
-typedef struct
+/**
+ * @brief Configuration structure for all UART channels.
+ * 
+ */
+typedef struct 
 {
-  const UartChannelCfgType* channels;
-  uint8_t numChannels;
+  uint8_t                       UartNumberOfChannels;
+  uint8_t                       ClkSrc;         
+  UartChannelCfgType  * UartChannel;
 } UartConfigType;
-
-typedef struct
-{
-  uint8_t ChannelId;
-  uint8_t Counter;
-  uint8_t TriggerCounter;
-} UartStatusType;
   
 /*============================================================================*/
 #endif /* UART_TYPES */

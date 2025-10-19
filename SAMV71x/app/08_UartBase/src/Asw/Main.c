@@ -27,9 +27,6 @@
 #include    "Button_Ctrl.h"
 /** Uart interfaces */
 #include    "Uart.h"
-/** Uart mini tester */
-#include    "UartMiniTester.h"
-#include    <string.h>
 
 
 /*~~~~~~  Local definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -67,10 +64,10 @@ extern int main( void )
     /* Uart Inititalization */
     printf( "-- Uart Initialization --\n\r" ) ;
 
-    Uart_Init(&UartConfiguredChannels[0]);
-	UartMiniTester_Init();
+    //Uart_Init(&UartConfiguredChannels[0]);
+	//UartMiniTester_Init();
 
-	{
+	/*{
 		static const char* preMsgs[] = {
 			"PRE: CH0 ready\r\n",
 			"PRE: CH1 ready\r\n",
@@ -81,8 +78,8 @@ extern int main( void )
 			const char* m = preMsgs[ch];
 			(void)Uart_Write(ch, (const uint8_t*)m, (uint16_t)strlen(m));
 		}
-	}
-	
+	}*/
+
 	/* Scheduler Inititalization */
 	printf( "-- Scheduler Initialization --\n\r" ) ;
 	SchM_Init(ScheduleConfig);
