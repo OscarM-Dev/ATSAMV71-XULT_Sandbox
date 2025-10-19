@@ -13,37 +13,57 @@ static const UartConfigType * gCfg = NULL;
 /* ************************************************************************** */
 /* Public functions.
 /* ************************************************************************** */
-UartErrorType Uart_Init(UartConfigType * Cfg)
+Std_ReturnType Uart_Init(UartConfigType * Cfg)
 {
   printf("TODO: Uart_Init()\n");
 }
 
-UartErrorType Uart_SetBaudrate(UartChannelType Ch, Uart_BaudrateType Baud)
+Std_ReturnType Uart_SetBaudrate(UartChannelType Ch, Uart_BaudrateType Baud)
 {
   printf("TODO: Uart_SetBaudrate()\n");
 }
 
-UartErrorType Uart_SetTxEnable(UartChannelType Ch, uint8_t Enable)
+Std_ReturnType Uart_SetTxEnable(UartChannelType Ch, uint8_t Enable)
 {
   printf("TODO: Uart_SetTxEnable()\n");
 }
 
-UartErrorType Uart_SendByte(UartChannelType Ch, uint8_t Byte)
+Std_ReturnType Uart_SendByte(UartChannelType Ch, uint8_t *Byte)
 {
-  printf("TODO: Uart_SendByte()\n");  
+  //Initializing structure.
+  Uart_Config.UartChannelTx[Ch].TxData = Byte;
+  Uart_Config.UartChannelTx[Ch].TxDataLen = 1;
+  Uart_Config.UartChannelTx[Ch].BytesTransmitted = 0;
+  Uart_Config.UartChannelTx[Ch].TransmissionComplete = 0;
+
+  //Enable interrupt and transmitter. //To do, call the corresponding functions and use conf macros.
+  UART_Driver_SetIt( Uart_Config.UartChannel[Ch].Addr, 1,  UART_IER_TXRDY );
+	UART_Driver_SetTx( Uart_Config.UartChannel[Ch].Addr, 1 );
+
+  return E_OK;
 }
 
-UartErrorType Uart_SendBuffer(UartChannelType Ch, uint8_t * Buf, uint16_t Len)
+Std_ReturnType Uart_SendBuffer(UartChannelType Ch, uint8_t * Buf, uint16_t Len)
 {
-  printf("TODO: Uart_SendBuffer()\n");
+  //Initializing structure.
+  Uart_Config.UartChannelTx[Ch].TxData = Buf;
+  Uart_Config.UartChannelTx[Ch].TxDataLen = Len;
+  Uart_Config.UartChannelTx[Ch].BytesTransmitted = 0;
+  Uart_Config.UartChannelTx[Ch].TransmissionComplete = 0;
+
+  //Enable interrupt and transmitter. //To do, call the corresponding functions and use conf macros.
+  UART_Driver_SetIt( Uart_Config.UartChannel[Ch].Addr, 1,  UART_IER_TXRDY );
+	UART_Driver_SetTx( Uart_Config.UartChannel[Ch].Addr, 1 );
+
+  return E_OK;
 }
 
-UartErrorType Uart_GetStatus(UartChannelType Ch, uint32_t * Out)
+Std_ReturnType Uart_GetStatus(UartChannelType Ch, uint32_t * Out)
 {
   printf("TODO: Uart_GetStatus()\n");
 }
 
-UartErrorType Uart_EnableInt(UartChannelType Ch, uint32_t IntMode, uint8_t Enable)
+Std_ReturnType Uart_EnableInt(UartChannelType Ch, uint32_t IntMode, uint8_t Enable)
 {
   printf("TODO: Uart_EnableInt()\n");
 }
@@ -59,83 +79,18 @@ UartErrorType Uart_EnableInt(UartChannelType Ch, uint32_t IntMode, uint8_t Enabl
  */
 void Uart_Isr( UartChannelType Channel )
 {
-  //Data messages for each UART channel.
-	static const uint8_t dataUART0[] = "Hello from UART0";
-	static const uint8_t dataUART1[] = "Hello from UART1";
-	static const uint8_t dataUART2[] = "Hello from UART2";
-	static const uint8_t dataUART3[] = "Hello from UART3";
-	static const uint8_t dataUART4[] = "Hello from UART4";
+  //Send byte of corresponding UART channel.
+  UART_Driver_SendByte( Uart_Config.UartChannel[Channel].Addr, 
+  Uart_Config.UartChannelTx[Channel].TxData[Uart_Config.UartChannelTx[Channel].BytesTransmitted] );
+  Uart_Config.UartChannelTx[Channel].BytesTransmitted++;
 
-  //Message length in bytes.
-  static const dataLengthsUART[5] =
+  //Analize if transmission was completed.
+  if( Uart_Config.UartChannelTx[Channel].BytesTransmitted >= Uart_Config.UartChannelTx[Channel].TxDataLen )
   {
-    sizeof( dataUART0 ) - 1,
-    sizeof( dataUART1 ) - 1,
-    sizeof( dataUART2 ) - 1,
-    sizeof( dataUART3 ) - 1,
-    sizeof( dataUART4 ) - 1
-  };
-
-  //Counters.
-  static countersUART[5] = { 0, 0, 0, 0, 0 };
-
-  //Analizing UART channel.
-  switch( Channel )
-  {
-    case UART_CFG_CHANNEL0:
-      UART_Driver_SendByte( UART0, dataUART0[countersUART[UART_CFG_CHANNEL0]] );
-      countersUART[UART_CFG_CHANNEL0]++;
-
-      if( countersUART[UART_CFG_CHANNEL0] >= dataLengthsUART[UART_CFG_CHANNEL0] )
-      { //Disable interrupts and transmitter.
-        UART_Driver_SetIt( UART0, 0, UART_IDR_TXRDY );
-        UART_Driver_SetTx( UART0, 0 );
-      }
-    break;
-
-    case UART_CFG_CHANNEL1:
-      UART_Driver_SendByte( UART1, dataUART1[countersUART[UART_CFG_CHANNEL1]] );
-      countersUART[UART_CFG_CHANNEL1]++;
-
-      if( countersUART[UART_CFG_CHANNEL1] >= dataLengthsUART[UART_CFG_CHANNEL1] )
-      { //Disable interrupts and transmitter.
-        UART_Driver_SetIt( UART1, 0, UART_IDR_TXRDY );
-        UART_Driver_SetTx( UART1, 0 );
-      }
-    break;
-    
-    case UART_CFG_CHANNEL2:
-        UART_Driver_SendByte( UART2, dataUART2[countersUART[UART_CFG_CHANNEL2]] );
-        countersUART[UART_CFG_CHANNEL2]++;
-
-        if( countersUART[UART_CFG_CHANNEL2] >= dataLengthsUART[UART_CFG_CHANNEL2] )
-        { //Disable interrupts and transmitter.
-          UART_Driver_SetIt( UART2, 0, UART_IDR_TXRDY );
-          UART_Driver_SetTx( UART2, 0 );
-        }
-    break;
-
-    case UART_CFG_CHANNEL3:
-        UART_Driver_SendByte( UART3, dataUART3[countersUART[UART_CFG_CHANNEL3]] );
-        countersUART[UART_CFG_CHANNEL3]++;
-
-        if( countersUART[UART_CFG_CHANNEL3] >= dataLengthsUART[UART_CFG_CHANNEL3] )
-        { //Disable interrupts and transmitter.
-          UART_Driver_SetIt( UART3, 0, UART_IDR_TXRDY );
-          UART_Driver_SetTx( UART3, 0 );
-        }
-    break;
-
-    case UART_CFG_CHANNEL4:
-        UART_Driver_SendByte( UART4, dataUART4[countersUART[UART_CFG_CHANNEL4]] );
-        countersUART[UART_CFG_CHANNEL4]++;
-
-        if( countersUART[UART_CFG_CHANNEL4] >= dataLengthsUART[UART_CFG_CHANNEL4] )
-        { //Disable interrupts and transmitter.
-          UART_Driver_SetIt( UART4, 0, UART_IDR_TXRDY );
-          UART_Driver_SetTx( UART4, 0 );
-        }
-    break;
+    //Disable interrupt and transmitter. //To do, call the corresponding functions and use conf macros.
+    UART_Driver_SetIt( Uart_Config.UartChannel[Channel].Addr, 0,  UART_IDR_TXRDY );
+	  UART_Driver_SetTx( Uart_Config.UartChannel[Channel].Addr, 0 );
+    Uart_Config.UartChannelTx[Channel].TransmissionComplete = 1;
   }
 }
 

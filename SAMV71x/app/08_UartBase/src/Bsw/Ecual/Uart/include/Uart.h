@@ -28,13 +28,13 @@
 /* ************************************************************************** */
 /* Public function prototypes  
 /* ************************************************************************** */
-UartErrorType Uart_Init        (UartConfigType * Cfg);
-UartErrorType Uart_SetBaudrate (UartChannelType Ch, Uart_BaudrateType Baud);
-UartErrorType Uart_SetTxEnable (UartChannelType Ch, uint8_t Enable);
-UartErrorType Uart_SendByte    (UartChannelType Ch, uint8_t Byte);
-UartErrorType Uart_SendBuffer  (UartChannelType Ch, uint8_t * Buf, uint16_t Len);
-UartErrorType Uart_GetStatus   (UartChannelType Ch, uint32_t * Out);
-UartErrorType Uart_EnableInt   (UartChannelType Ch, uint32_t IntMode, uint8_t Enable);
+Std_ReturnType Uart_Init        (UartConfigType * Cfg);
+Std_ReturnType Uart_SetBaudrate (UartChannelType Ch, Uart_BaudrateType Baud);
+Std_ReturnType Uart_SetTxEnable (UartChannelType Ch, uint8_t Enable);
+Std_ReturnType Uart_SendByte    (UartChannelType Ch, uint8_t * Byte);
+Std_ReturnType Uart_SendBuffer  (UartChannelType Ch, uint8_t * Buf, uint16_t Len);
+Std_ReturnType Uart_GetStatus   (UartChannelType Ch, uint32_t * Out);
+Std_ReturnType Uart_EnableInt   (UartChannelType Ch, uint32_t IntMode, uint8_t Enable);
 
 /* ************************************************************************** */
 /* Public Handlers.  

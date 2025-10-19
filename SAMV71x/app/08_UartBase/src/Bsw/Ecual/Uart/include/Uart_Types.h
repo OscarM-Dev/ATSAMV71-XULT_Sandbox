@@ -41,7 +41,10 @@ typedef uint32_t Uart_BaudrateType;
  */
 typedef struct
 {
-
+  uint8_t *TxData;
+  uint16_t TxDataLen;
+  uint16_t BytesTransmitted;
+  uint8_t  TransmissionComplete;
 } UartChannelTxType;
 
 /**
@@ -58,6 +61,8 @@ typedef struct
   UartNotification      TxNotification;
   UartNotification      RxNotification;
   UartErrorNotification ErrorNotification;
+  Uart                  *Addr;
+  Pin                   UartPin;
 } UartChannelCfgType;
 
 /**
@@ -69,6 +74,7 @@ typedef struct
   uint8_t                       UartNumberOfChannels;
   uint8_t                       ClkSrc;         
   UartChannelCfgType  * UartChannel;
+  UartChannelTxType   * UartChannelTx;
 } UartConfigType;
   
 /*============================================================================*/

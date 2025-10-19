@@ -28,14 +28,106 @@
 /** Uart interfaces */
 #include    "Uart.h"
 
-
 /*~~~~~~  Local definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /*~~~~~~  Global variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 
 /*~~~~~~  Local functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+static void UART_Tester( void )
+{
+	static uint8_t dataUART0[] = "Hello from UART0";
+	static uint8_t dataUART1[] = "Hello from UART1";
+	static uint8_t dataUART2[] = "Hello from UART2";
+	static uint8_t dataUART3[] = "Hello from UART3";
+	static uint8_t dataUART4[] = "Hello from UART4";
 
+	//Pin configuration.
+	const Pin UARTPins[5] =
+	{
+		{ 
+			.mask = PIO_PA10A_UTXD0, 
+			.pio = PIOA, 
+			.id = ID_PIOA, 
+			.type = PIO_PERIPH_A, 
+			.attribute = PIO_DEFAULT 
+		},
+
+		{ 
+			.mask = PIO_PA6C_UTXD1, 
+			.pio = PIOA, 
+			.id = ID_PIOA, 
+			.type = PIO_PERIPH_C, 
+			.attribute = PIO_DEFAULT 
+		},
+
+		{
+			.mask = PIO_PD26C_UTXD2, 
+			.pio = PIOD, 
+			.id = ID_PIOD, 
+			.type = PIO_PERIPH_C, 
+			.attribute = PIO_DEFAULT 
+		},
+
+		{
+			.mask = PIO_PD30A_UTXD3, 
+			.pio = PIOD, 
+			.id = ID_PIOD, 
+			.type = PIO_PERIPH_A, 
+			.attribute = PIO_DEFAULT 
+		},
+
+		{
+			.mask = PIO_PD19C_UTXD4, 
+			.pio = PIOD, 
+			.id = ID_PIOD, 
+			.type = PIO_PERIPH_C, 
+			.attribute = PIO_DEFAULT 
+		}
+	};
+
+	//Enabling and configuring pins.
+	PMC_EnablePeripheral( ID_PIOA );
+	PMC_EnablePeripheral( ID_PIOD );
+	PIO_Configure( UARTPins, 5 );
+
+	//Enabling and configuring global interrupts.
+	NVIC_SetPriority( (IRQn_Type)ID_UART0, 1 );
+	NVIC_EnableIRQ( (IRQn_Type)ID_UART0 );
+	NVIC_SetPriority( (IRQn_Type)ID_UART1, 1 );
+	NVIC_EnableIRQ( (IRQn_Type)ID_UART1 );
+	NVIC_SetPriority( (IRQn_Type)ID_UART2, 1 );
+	NVIC_EnableIRQ( (IRQn_Type)ID_UART2 );
+	NVIC_SetPriority( (IRQn_Type)ID_UART3, 1 );
+	NVIC_EnableIRQ( (IRQn_Type)ID_UART3 );
+	NVIC_SetPriority( (IRQn_Type)ID_UART4, 1 );
+	NVIC_EnableIRQ( (IRQn_Type)ID_UART4 );
+
+	//UART0.
+	PMC_EnablePeripheral( ID_UART0 );
+	UART_Driver_Configure( UART0, 0, 0, 0, 115200, 150000000 );
+	Uart_SendBuffer( 0, dataUART0, strlen( dataUART0 ) );
+
+	//UART1.
+	PMC_EnablePeripheral( ID_UART1 );
+	UART_Driver_Configure( UART1, 0, 0, 0, 57600, 150000000 );
+	Uart_SendBuffer( 1, dataUART1, strlen( dataUART1 ) );
+
+	//UART2.
+	PMC_EnablePeripheral( ID_UART2 );
+	UART_Driver_Configure( UART2, 0, 0, 0, 19200, 150000000 );
+	Uart_SendBuffer( 2, dataUART2, strlen( dataUART2 ) );
+
+	//UART3.
+	PMC_EnablePeripheral( ID_UART3 );
+	UART_Driver_Configure( UART3, 0, 0, 0, 9600, 150000000 );
+	Uart_SendBuffer( 3, dataUART3, strlen( dataUART3 ) );
+
+	//UART4.
+	PMC_EnablePeripheral( ID_UART4 );
+	UART_Driver_Configure( UART4, 0, 0, 0, 4800, 150000000 );
+	Uart_SendBuffer( 4, dataUART4, strlen( dataUART4 ) );
+}		
 /*----------------------------------------------------------------------------
  *        Exported functions
  *----------------------------------------------------------------------------*/
@@ -54,6 +146,8 @@ extern int main( void )
 	/* Enable I and D cache */
 	SCB_EnableICache();
 	/* SCB_EnableDCache(); */
+	UART_Tester();
+
 	/* Configure LEDs */
 	printf( "-- Led Control --\n\r" ) ;
 	LedCtrl_Configure();

@@ -18,6 +18,7 @@
   #include "board.h"
   #include <stdbool.h>
   #include <stdio.h>
+  #include <string.h>
   /** Compiler */
 	#include "compiler.h"
   /** Core-specific prototypes and definitions */
