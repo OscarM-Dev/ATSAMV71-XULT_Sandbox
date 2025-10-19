@@ -124,3 +124,14 @@ uint8_t UART_Driver_IsTxReady( Uart *uart )
 
     return result;
 }
+
+/**
+ * @brief This function returns the actual Status register value.
+ * 
+ * @param uart Pointer to the base addr of the UART to configure.
+ * @retval Status register value. 
+ */
+uint32_t UART_Driver_GetStatus( Uart *uart )
+{
+	return uart->UART_SR;
+}

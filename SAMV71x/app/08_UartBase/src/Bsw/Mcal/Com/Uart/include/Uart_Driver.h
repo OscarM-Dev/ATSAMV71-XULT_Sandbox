@@ -20,5 +20,6 @@ void UART_Driver_SetIt( Uart *uart, uint8_t enable, uint32_t mode );
 void UART_Driver_SetTx( Uart *uart, uint8_t enable );
 void UART_Driver_SendByte( Uart *uart, uint8_t data );
 uint8_t UART_Driver_IsTxReady( Uart *uart );
+uint32_t UART_Driver_GetStatus( Uart *uart );
 
 #endif
