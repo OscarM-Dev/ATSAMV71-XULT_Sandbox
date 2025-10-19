@@ -66,6 +66,7 @@ extern int main( void )
   
     /* Uart Inititalization */
     printf( "-- Uart Initialization --\n\r" ) ;
+
     Uart_Init(&UartConfiguredChannels[0]);
 	UartMiniTester_Init();
 
@@ -81,7 +82,7 @@ extern int main( void )
 			(void)Uart_Write(ch, (const uint8_t*)m, (uint16_t)strlen(m));
 		}
 	}
-  
+	
 	/* Scheduler Inititalization */
 	printf( "-- Scheduler Initialization --\n\r" ) ;
 	SchM_Init(ScheduleConfig);

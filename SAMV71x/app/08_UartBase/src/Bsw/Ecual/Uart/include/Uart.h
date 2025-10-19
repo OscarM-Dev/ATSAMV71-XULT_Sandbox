@@ -16,6 +16,7 @@
 #include "Std_Types.h"
 #include "Uart_Types.h"
 #include "Uart_Cfg.h"
+#include "Uart_Driver.h"
 
 #define UART_MASK_RXRDT         ((uint8)1)
 #define UART_MASK_TXRDY         ((uint8)2)
