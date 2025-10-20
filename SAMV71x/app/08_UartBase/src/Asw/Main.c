@@ -91,10 +91,8 @@ extern int main( void )
 	SchM_Init(ScheduleConfig);
 	
 	/* Should never reach this code */
-	/*
 	for(;;)
     {
 		printf( "-- Unexpected Error at Scheduler Initialization --\n\r" ) ;
 	}
-    */
 }
