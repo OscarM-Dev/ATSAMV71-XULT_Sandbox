@@ -36,16 +36,5 @@ Std_ReturnType Uart_SendBuffer  (UartChannelType Ch, uint8_t * Buf, uint16_t Len
 Std_ReturnType Uart_GetStatus   (UartChannelType Ch, uint32_t * Out);
 Std_ReturnType Uart_EnableInt   (UartChannelType Ch, uint32_t IntMode, uint8_t Enable);
 
-/* ************************************************************************** */
-/* Public Handlers.  
-/* ************************************************************************** */
-void          Uart_Isr         (UartChannelType ChannelId);
-
-void UART0_Handler(void);
-void UART1_Handler(void);
-void UART2_Handler(void);
-void UART3_Handler(void);
-void UART4_Handler(void);
-
 /*============================================================================*/
 #endif /* _UART_H */

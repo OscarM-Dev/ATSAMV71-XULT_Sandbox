@@ -42,6 +42,7 @@
 #define UART_CFG_PARITY_NONE    ((uint8_t)4)
 
 //UART channel baudrate configuration.
+#define UART_CFG_BAUDRATE_4800     ((uint32_t)4800)
 #define UART_CFG_BAUDRATE_9600     ((uint32_t)9600)
 #define UART_CFG_BAUDRATE_19200    ((uint32_t)19200)
 #define UART_CFG_BAUDRATE_38400    ((uint32_t)38400)
