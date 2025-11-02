@@ -70,6 +70,11 @@ extern int main( void )
   /* Enable Floating Point Unit */
   printf( "-- Floating Point Unit --\n\r" ) ;
   Fpu_Enable();
+
+	/* Enable I and D cache */
+	SCB_EnableICache();
+	SCB_EnableDCache();
+
   /************************************************************************************/
   /* Float operations */
   spf_result = spf_int1 - spf_int2;
