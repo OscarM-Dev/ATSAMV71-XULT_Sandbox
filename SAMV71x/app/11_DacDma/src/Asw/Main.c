@@ -100,11 +100,11 @@ extern int main( void )
 	s32_result = s32_int1 + s32_int2;
 	s32_result = s32_int1 * s32_int2;
 	s32_result = s32_int1 / s32_int2;  
-  /************************************************************************************/
+  /************************************************************************************/   
+  /* Initialize DAC */
+  dac_initialization();
+  dac_dmaTransfer();
   
-      /* Initialize DAC */
-    dac_initialization();
-    dac_dmaTransfer();
 	
   /* Scheduler Inititalization */
 	printf( "-- Scheduler Initialization --\n\r" ) ;

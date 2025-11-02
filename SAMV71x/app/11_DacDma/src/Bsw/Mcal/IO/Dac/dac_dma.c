@@ -78,13 +78,35 @@
 
 #include <stdint.h>
 #include <assert.h>
-
+/*----------------------------------------------------------------------------
+ *	Local data.
+ *----------------------------------------------------------------------------*/
 /*  DMA driver instance */
 static uint32_t dacDmaTxChannel;
 static LinkedListDescriporView1 dmaWriteLinkList[1024]; // Size of DAC data buffer (Original 256)
+
+/*----------------------------------------------------------------------------
+ * Exported data.
+ *----------------------------------------------------------------------------*/
+extern sXdmad dmad;
+
 /*----------------------------------------------------------------------------
  *        Local functions
  *----------------------------------------------------------------------------*/
+/**
+ * @brief This functions is the callback for the complete data transfer of the DMA Memory-DAC dedicated channel.
+ * 
+ * @param channelId channel who called the callback.
+ * @param pArg Optional argument.
+ */
+static void DAC_DMA_TransferCallback( uint32_t channelId, void* pArg )
+{
+	UNUSED( pArg );
+
+	printf( "DMA channel %d data transfer completed\n\r", channelId );
+	printf( "DAC 0 completed all the samples\n\r" );
+}
+
 
 /**
  * \brief Configure the DMA Channels: 0 RX.
@@ -95,20 +117,24 @@ static LinkedListDescriporView1 dmaWriteLinkList[1024]; // Size of DAC data buff
 static uint8_t _DacConfigureDmaChannels( DacDma* pDacd )
 {
 
-	/* Driver initialize */
+	/* XDMA Driver initialize */
 	XDMAD_Initialize( pDacd->pXdmad, 0 );
 
-	XDMAD_FreeChannel( pDacd->pXdmad, dacDmaTxChannel);
+	XDMAD_FreeChannel( pDacd->pXdmad, dacDmaTxChannel );
 
-	/* Allocate a DMA channel for DAC0/1 TX. */
-	dacDmaTxChannel = 
-		XDMAD_AllocateChannel( pDacd->pXdmad, XDMAD_TRANSFER_MEMORY, ID_DACC);
+	/* Allocate a DMA channel for DAC0/1 TX.
+	Initializing control structure for DMA channel */
+	dacDmaTxChannel = XDMAD_AllocateChannel( pDacd->pXdmad, XDMAD_TRANSFER_MEMORY, ID_DACC );
+	XDMAD_SetCallback( pDacd->pXdmad, dacDmaTxChannel, DAC_DMA_TransferCallback, NULL );
+
 	if ( dacDmaTxChannel == XDMAD_ALLOC_FAILED ) {
 		return DAC_ERROR;
 	}
 
+	//Cleaning internal registers of DMA channel.
 	if ( XDMAD_PrepareChannel( pDacd->pXdmad, dacDmaTxChannel )) 
 		return DAC_ERROR;
+
 	return DAC_OK;
 }
 
@@ -163,13 +189,24 @@ static uint8_t _Dac_configureLinkList(Dacc *pDacHw, void *pXdmad, DacCmd *pComma
 			 | XDMAC_CNDC_NDSUP_SRC_PARAMS_UPDATED
 			 | XDMAC_CNDC_NDDUP_DST_PARAMS_UPDATED ;
 	XDMAD_ConfigureTransfer( pXdmad, dacDmaTxChannel, &xdmadCfg, xdmaCndc, 
-			(uint32_t)&dmaWriteLinkList[0], XDMAC_CIE_LIE);
+			(uint32_t)&dmaWriteLinkList[0], XDMAC_CIE_LIE ); //| XDMAC_CIE_BIE );
 	return DAC_OK;
 }
 
 /*----------------------------------------------------------------------------
  *        Exported functions
  *----------------------------------------------------------------------------*/
+/**
+ * @brief DMA ISR definition.
+ * @note This function calls the dedicated handler. 
+ * 
+ */
+void XDMAC_Handler( void )
+{
+	XDMAD_Handler( &dmad );
+}
+
+
 /**
  * \brief Initializes the DacDma structure and the corresponding DAC & DMA .
  * hardware select value.
@@ -181,12 +218,9 @@ static uint8_t _Dac_configureLinkList(Dacc *pDacHw, void *pXdmad, DacCmd *pComma
  * \param DacId  Dac peripheral identifier.
  * \param pDmad  Pointer to a Dmad instance. 
  */
-uint32_t Dac_ConfigureDma( DacDma *pDacd ,
-		Dacc *pDacHw ,
-		uint8_t DacId,
-		sXdmad *pXdmad )
+uint32_t Dac_ConfigureDma( DacDma *pDacd, Dacc *pDacHw, uint8_t DacId, sXdmad *pXdmad )
 {
-	/* Initialize the Dac structure */
+	/* Initialize the Dac DMA structure */
 	pDacd->pDacHw = pDacHw;
 	pDacd->dacId  = DacId;
 	pDacd->semaphore = 1;
@@ -205,12 +239,13 @@ uint32_t Dac_ConfigureDma( DacDma *pDacd ,
  * DAC_ERROR_LOCK is the driver is in use, or DAC_ERROR if the command is not
  * valid.
  */
-uint32_t Dac_SendData( DacDma *pDacd, DacCmd *pCommand)
+uint32_t Dac_SendData( DacDma *pDacd, DacCmd *pCommand )
 {
 	Dacc *pDacHw = pDacd->pDacHw;
 
 	/* Try to get the dataflash semaphore */
-	if (pDacd->semaphore == 0) {
+	if ( pDacd->semaphore == 0 )
+	{
 		return DAC_ERROR_LOCK;
 	}
 	pDacd->semaphore--;
@@ -219,16 +254,17 @@ uint32_t Dac_SendData( DacDma *pDacd, DacCmd *pCommand)
 	pDacd->pCurrentCommand = pCommand;
 
 	/* Initialize DMA controller using channel 0 for RX. */
-	if (_DacConfigureDmaChannels(pDacd) )
+	if ( _DacConfigureDmaChannels( pDacd ) )
 		return DAC_ERROR_LOCK;
 
-	if (_Dac_configureLinkList(pDacHw, pDacd->pXdmad, pCommand))
+	if ( _Dac_configureLinkList( pDacHw, pDacd->pXdmad, pCommand ) )
 		return DAC_ERROR_LOCK;
 
 	SCB_CleanDCache();
 
 	/* Start DMA TX */
-	if (XDMAD_StartTransfer( pDacd->pXdmad, dacDmaTxChannel )) 
+	if ( XDMAD_StartTransfer( pDacd->pXdmad, dacDmaTxChannel ) ) 
 		return DAC_ERROR_LOCK;
+
 	return DAC_OK;;
 }
