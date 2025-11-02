@@ -42,7 +42,7 @@ __attribute__((aligned(64))) uint16_t dacBuffer[SAMPLES];
 /** Global DMA driver for all transfer */
 sXdmad dmad;
 /** Global DAC DMA instance */
- DacDma Dacd;
+DacDma Dacd;
 /** DAC command instance */
 DacCmd DacCommand;
 
@@ -57,8 +57,6 @@ DacCmd DacCommand;
 /* ----------------------------------------------------------------------------------------------- */
 /* Timer Counter configuration to generate 1 kHz HW trigger for DACC                               */
 /* ----------------------------------------------------------------------------------------------- */
-
-
 static void tc0_ch0_1khz(void)
 {
 	const uint32_t mck  = BOARD_MCK;
@@ -85,22 +83,19 @@ static void tc0_ch0_1khz(void)
     tc->TC_CCR = TC_CCR_CLKEN | TC_CCR_SWTRG;
 }
 
+/* ----------------------------------------------------------------------------------------------- */
+/* DACC SETUP                                                                                     */
+/* ----------------------------------------------------------------------------------------------- */
 static void dac_setup(void) 
 {
-	/* Enable Digital to Analog Converter Controller */
 	PMC_EnablePeripheral(ID_DACC);
-	/* Command a Soft-reset onto Digital to Analog Converter Controller */
 	DACC_SoftReset(DACC);
-	/* Enable channels */
 	DACC_EnableChannel(DACC, 0);
 	DACC->DACC_MR &= ~DACC_MR_MAXS0;
-	/* Configure DACC hardware trigger: enable TRGEN0 and select TC2 as source (TRGSEL0=2)
-	   Reference: component_dacc.h defines DACC_TRIGR_TRGEN0 and TRGSEL0 fields. */
-	DACC->DACC_TRIGR = DACC_TRIGR_TRGEN0_EN | DACC_TRIGR_TRGSEL0_TRGSEL0;
+	DACC->DACC_TRIGR = DACC_TRIGR_TRGEN0_EN | DACC_TRIGR_TRGSEL0_TRGSEL1;
 	/* No IRQ */
 	DACC->DACC_IDR = 0xFFFFFFFFu; //temp
 }
-
 
 static void dac_prepare_buffer(void)
 {
@@ -115,6 +110,28 @@ static void dac_prepare_buffer(void)
 	}
 }
 
+/* ----------------------------------------------------------------------------------------------- */
+/* DACC Trigger Test                                                                               */
+/* ----------------------------------------------------------------------------------------------- */
+static inline int dacc_txrdy(void){
+return (DACC->DACC_ISR & (DACC_TRIGR_TRGEN0_EN | DACC_TRIGR_TRGSEL0_TRGSEL1)) ? 1 : 0;
+}
+
+void dacc_feed_cpu_test(const uint16_t *buf, uint32_t n){
+    uint32_t i = 0;
+    DACC->DACC_CDR[0] = buf[i++ % n];
+    while (1){
+        if (dacc_txrdy()){
+            DACC->DACC_CDR[0] = buf[i++ % n];
+        }
+    }
+}
+
+void prepare_buffer_test(void){
+	uint32_t k;
+	for (k=0;k<SAMPLES;k++) dacBuffer[k] = (k & 1) ? 4095 : 0;
+}
+
 /****************************************************************************************************/
 /**
 * \brief    SysTick - Initialization
@@ -126,9 +143,14 @@ static void dac_prepare_buffer(void)
 */
 void dac_initialization(void)
 {
+	//Just a test to validate DAC + Timer
+	//prepare_buffer_test();
+	//Put the ECG data into DAC buffer
 	dac_prepare_buffer();
     tc0_ch0_1khz();
     dac_setup();
+	//Just a test to validate DAC + Timer
+	//dacc_feed_cpu_test(dacBuffer, SAMPLES);
     PMC_EnablePeripheral(ID_XDMAC); //temp
 }
 
@@ -143,7 +165,7 @@ void dac_dmaTransfer(void)
 	DacCommand.dacChannel = DACC_CHANNEL_0;
 	DacCommand.TxSize = SAMPLES;
 	DacCommand.pTxBuff = (uint8_t *)dacBuffer;
-	DacCommand.loopback = 0;
+	DacCommand.loopback = 1;
 	Dac_ConfigureDma(&Dacd, DACC, ID_DACC, &dmad);
 	Dac_SendData(&Dacd, &DacCommand);
 }
