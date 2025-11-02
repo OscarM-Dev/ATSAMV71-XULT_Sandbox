@@ -99,7 +99,7 @@ extern int main( void )
   
       /* Initialize DAC */
     dac_initialization();
-    dac_dmaTransfer();
+    //dac_dmaTransfer();
 	
   /* Scheduler Inititalization */
 	printf( "-- Scheduler Initialization --\n\r" ) ;

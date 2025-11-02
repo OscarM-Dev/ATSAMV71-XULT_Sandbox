@@ -119,7 +119,10 @@ typedef struct
 /*------------------------------------------------------------------------------
  *         Exported functions
  *------------------------------------------------------------------------------*/
-extern uint32_t Dac_ConfigureDma( DacDma *pDacd, Dacc *pDacHw, uint8_t DacId, sXdmad *pXdmad );
+extern uint32_t Dac_ConfigureDma( DacDma *pDacd ,
+						   Dacc *pDacHw ,
+						   uint8_t DacId,
+						   sXdmad *pXdmad );
 extern uint32_t Dac_SendData( DacDma *pDacd, DacCmd *pCommand);
 
 
