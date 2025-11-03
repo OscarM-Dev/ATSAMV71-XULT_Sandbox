@@ -168,7 +168,7 @@ void dac_dmaTransfer( void )
 
 	//Initialize DAC command control struct.
 	DacCommand.dacChannel = DACC_CHANNEL_0;
-	DacCommand.TxSize = SAMPLES;
+	DacCommand.TxSize = 2;
 	DacCommand.pTxBuff = ( uint8_t * ) dacBuffer;
 	DacCommand.loopback = 0;
 

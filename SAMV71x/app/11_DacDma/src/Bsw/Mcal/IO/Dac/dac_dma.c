@@ -83,7 +83,7 @@
  *----------------------------------------------------------------------------*/
 /*  DMA driver instance */
 static uint32_t dacDmaTxChannel;
-static LinkedListDescriporView0 dmaWriteLinkList[1024]; // Size of DAC data buffer (Original 256)
+static LinkedListDescriporView0 dmaWriteLinkList[2]; // Size of DAC data buffer (Original 256)
 
 /*----------------------------------------------------------------------------
  * Exported data.
@@ -165,7 +165,7 @@ static uint8_t _Dac_configureLinkList( Dacc *pDacHw, sXdmad *pXdmad, DacCmd *pCo
 			dmaWriteLinkList[i].mbr_nda = ( uint32_t ) &dmaWriteLinkList[i + 1];
 
 			//Microblock control member
-			dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV0 | XDMA_UBC_NDE_FETCH_EN | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 1 );
+			dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV0 | XDMA_UBC_NDE_FETCH_EN | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 512 );
 		}
 
 		else
@@ -176,7 +176,7 @@ static uint8_t _Dac_configureLinkList( Dacc *pDacHw, sXdmad *pXdmad, DacCmd *pCo
 				dmaWriteLinkList[i].mbr_nda = ( uint32_t ) &dmaWriteLinkList[0];
 
 				//Microblock control member
-				dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV0 | XDMA_UBC_NDE_FETCH_EN | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 1 );
+				dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV0 | XDMA_UBC_NDE_FETCH_EN | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 512 );
 			}
 
 			else 
@@ -184,13 +184,13 @@ static uint8_t _Dac_configureLinkList( Dacc *pDacHw, sXdmad *pXdmad, DacCmd *pCo
 				dmaWriteLinkList[i].mbr_nda = 0;
 
 				//Microblock control member
-				dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV0 | XDMA_UBC_NDE_FETCH_DIS | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 1 );	
+				dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV0 | XDMA_UBC_NDE_FETCH_DIS | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 512 );	
 			}
 		}
 
 		//Source address member ( updated each iteration ).
 		dmaWriteLinkList[i].mbr_ta = ( uint32_t ) pBuffer;
-		pBuffer++;
+		pBuffer += 512;
 	}
 
 	//Initial channel control register value.
