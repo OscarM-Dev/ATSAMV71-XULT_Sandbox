@@ -71,9 +71,10 @@ extern int main( void )
   printf( "-- Floating Point Unit --\n\r" ) ;
   Fpu_Enable();
 
-  /* Enable I and D cache */
-  SCB_EnableICache();
-  SCB_EnableDCache();
+	/* Enable I and D cache */
+	SCB_EnableICache();
+	SCB_EnableDCache();
+
 
   /************************************************************************************/
   /* Float operations */
@@ -100,11 +101,17 @@ extern int main( void )
 	s32_result = s32_int1 + s32_int2;
 	s32_result = s32_int1 * s32_int2;
 	s32_result = s32_int1 / s32_int2;  
-  /************************************************************************************/
-  
+  /************************************************************************************/   
   /* Initialize DAC */
   dac_initialization();
   dac_dmaTransfer();
+  
+<<<<<<< HEAD
+  /* Initialize DAC */
+  dac_initialization();
+  dac_dmaTransfer();
+=======
+>>>>>>> DMA_Configuration
 	
   /* Scheduler Inititalization */
 	printf( "-- Scheduler Initialization --\n\r" ) ;

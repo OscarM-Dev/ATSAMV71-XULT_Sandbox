@@ -156,16 +156,26 @@ void dac_initialization(void)
 
 /**
  *  \brief Configure DAC DMA and start DMA transfer.
+ * @note Initializes DACDMA and DACCMD control structures.
 * \param    void
 * \return   void
 * \todo
 */
-void dac_dmaTransfer(void)
+void dac_dmaTransfer( void )
 {
+	//Initialize DAC_DMA control struct.
+	Dac_ConfigureDma( &Dacd, DACC, ID_DACC, &dmad );
+
+	//Initialize DAC command control struct.
 	DacCommand.dacChannel = DACC_CHANNEL_0;
 	DacCommand.TxSize = SAMPLES;
-	DacCommand.pTxBuff = (uint8_t *)dacBuffer;
-	DacCommand.loopback = 1;
-	Dac_ConfigureDma(&Dacd, DACC, ID_DACC, &dmad);
-	Dac_SendData(&Dacd, &DacCommand);
+	DacCommand.pTxBuff = ( uint8_t * ) dacBuffer;
+	DacCommand.loopback = 0;
+
+	/* Configure NVIC for DMA*/
+  	NVIC_SetPriority( XDMAC_IRQn, 1 );
+  	NVIC_EnableIRQ( XDMAC_IRQn );
+	
+	//Configure and initialize DMA channel for DAC0.
+	Dac_SendData( &Dacd, &DacCommand );
 }
