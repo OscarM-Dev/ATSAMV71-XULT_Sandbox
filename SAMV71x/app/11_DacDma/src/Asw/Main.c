@@ -106,13 +106,6 @@ extern int main( void )
   dac_initialization();
   dac_dmaTransfer();
   
-<<<<<<< HEAD
-  /* Initialize DAC */
-  dac_initialization();
-  dac_dmaTransfer();
-=======
->>>>>>> DMA_Configuration
-	
   /* Scheduler Inititalization */
 	printf( "-- Scheduler Initialization --\n\r" ) ;
 	SchM_Init(ScheduleConfig);
