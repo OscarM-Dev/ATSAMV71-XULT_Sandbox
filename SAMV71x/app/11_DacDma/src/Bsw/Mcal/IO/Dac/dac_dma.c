@@ -83,7 +83,7 @@
  *----------------------------------------------------------------------------*/
 /*  DMA driver instance */
 static uint32_t dacDmaTxChannel;
-static LinkedListDescriporView1 dmaWriteLinkList[1024]; // Size of DAC data buffer (Original 256)
+static LinkedListDescriporView0 dmaWriteLinkList[1024]; // Size of DAC data buffer (Original 256)
 
 /*----------------------------------------------------------------------------
  * Exported data.
@@ -165,7 +165,7 @@ static uint8_t _Dac_configureLinkList( Dacc *pDacHw, sXdmad *pXdmad, DacCmd *pCo
 			dmaWriteLinkList[i].mbr_nda = ( uint32_t ) &dmaWriteLinkList[i + 1];
 
 			//Microblock control member
-			dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV1 | XDMA_UBC_NDE_FETCH_EN | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 1 );
+			dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV0 | XDMA_UBC_NDE_FETCH_EN | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 1 );
 		}
 
 		else
@@ -176,7 +176,7 @@ static uint8_t _Dac_configureLinkList( Dacc *pDacHw, sXdmad *pXdmad, DacCmd *pCo
 				dmaWriteLinkList[i].mbr_nda = ( uint32_t ) &dmaWriteLinkList[0];
 
 				//Microblock control member
-				dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV1 | XDMA_UBC_NDE_FETCH_EN | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 1 );
+				dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV0 | XDMA_UBC_NDE_FETCH_EN | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 1 );
 			}
 
 			else 
@@ -184,16 +184,12 @@ static uint8_t _Dac_configureLinkList( Dacc *pDacHw, sXdmad *pXdmad, DacCmd *pCo
 				dmaWriteLinkList[i].mbr_nda = 0;
 
 				//Microblock control member
-				dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV1 | XDMA_UBC_NDE_FETCH_DIS | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 1 );	
+				dmaWriteLinkList[i].mbr_ubc = XDMA_UBC_NVIEW_NDV0 | XDMA_UBC_NDE_FETCH_DIS | XDMA_UBC_NSEN_UPDATED | XDMAC_CUBC_UBLEN( 1 );	
 			}
 		}
 
 		//Source address member ( updated each iteration ).
-		dmaWriteLinkList[i].mbr_sa = ( uint32_t ) pBuffer;
-
-		//Destination address member ( Fixed in every iteration ).
-		dmaWriteLinkList[i].mbr_da = ( uint32_t ) &( pDacHw->DACC_CDR[pCommand->dacChannel] );
-
+		dmaWriteLinkList[i].mbr_ta = ( uint32_t ) pBuffer;
 		pBuffer++;
 	}
 
@@ -201,7 +197,7 @@ static uint8_t _Dac_configureLinkList( Dacc *pDacHw, sXdmad *pXdmad, DacCmd *pCo
 	xdmadCfg.mbr_cfg = XDMAC_CC_TYPE_PER_TRAN 
 					 | XDMAC_CC_MBSIZE_SINGLE 
 					 | XDMAC_CC_DSYNC_MEM2PER
-					 | XDMAC_CC_SWREQ_SWR_CONNECTED
+					 | XDMAC_CC_SWREQ_HWR_CONNECTED
 					 | XDMAC_CC_CSIZE_CHK_1 
 					 | XDMAC_CC_DWIDTH_HALFWORD
 					 | XDMAC_CC_SIF_AHB_IF0 
@@ -209,9 +205,15 @@ static uint8_t _Dac_configureLinkList( Dacc *pDacHw, sXdmad *pXdmad, DacCmd *pCo
 					 | XDMAC_CC_SAM_INCREMENTED_AM 
 					 | XDMAC_CC_DAM_FIXED_AM 
 					 | XDMAC_CC_PERID( XDMAIF_Get_ChannelNumber( ID_DACC, XDMAD_TRANSFER_TX ) );
+
+	//Initial source address register value.
+	xdmadCfg.mbr_sa = ( uint32_t ) pCommand->pTxBuff;
 	
+	//Destination address register value.
+	xdmadCfg.mbr_da = ( uint32_t ) &( pDacHw->DACC_CDR[pCommand->dacChannel] );
+
 	//Initial next descriptor control register value.
-	xdmaCndc = XDMAC_CNDC_NDVIEW_NDV1 | XDMAC_CNDC_NDE_DSCR_FETCH_EN | XDMAC_CNDC_NDSUP_SRC_PARAMS_UPDATED | XDMAC_CNDC_NDDUP_DST_PARAMS_UPDATED;
+	xdmaCndc = XDMAC_CNDC_NDVIEW_NDV0 | XDMAC_CNDC_NDE_DSCR_FETCH_EN | XDMAC_CNDC_NDSUP_SRC_PARAMS_UPDATED;
 	
 	//Configuring channel control and descriptor registers.
 	XDMAD_ConfigureTransfer( pXdmad, dacDmaTxChannel, &xdmadCfg, xdmaCndc, ( uint32_t ) &dmaWriteLinkList[0], XDMAC_CIE_LIE );

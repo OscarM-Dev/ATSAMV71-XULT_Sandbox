@@ -28,7 +28,7 @@
 * Definition of  VARIABLEs - 
 *****************************************************************************************************/
 /** */
-uint32_t dacBuffer[SAMPLES];
+uint16_t dacBuffer[SAMPLES]; //= { 4095, 2047, 4095, 2047, 0, 4095 };
 
 /** Global DMA driver for all transfer */
 sXdmad dmad;
@@ -73,7 +73,7 @@ void dac_initialization(void)
 	Mode = 0 --> Disabling Trigger mode --> Free-running or Max speed mode on the status of DACC_MR.MAXSx
 	Mode = 1 --> Trigger mode enabled 
 	 */
-	/* DACC_CfgTrigger(DACC, 0); */
+	//DACC_CfgTrigger(DACC, 0);
 }
 
 /**
@@ -90,8 +90,8 @@ void dac_dmaTransfer( void )
 
 	//Initialize DAC command control struct.
 	DacCommand.dacChannel = DACC_CHANNEL_0;
-	DacCommand.TxSize = 5;
-	DacCommand.pTxBuff = (uint8_t *) dacBuffer;
+	DacCommand.TxSize = SAMPLES;
+	DacCommand.pTxBuff = ( uint8_t * ) dacBuffer;
 	DacCommand.loopback = 0;
 
 	/* Configure NVIC for DMA*/
