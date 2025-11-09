@@ -26,6 +26,12 @@
 
 /SAMV71x/app/11_DacDma/SAMV71_Xplained_Ultra/*
 !/SAMV71x/app/11_DacDma/SAMV71_Xplained_Ultra/*.slo
-!/SAMV71x/app/11_DacDmaSAMV71_Xplained_Ultra/*.xjrf
+!/SAMV71x/app/11_DacDma/SAMV71_Xplained_Ultra/*.xjrf
 !/SAMV71x/app/11_DacDma/SAMV71_Xplained_Ultra/*.xqrf
 !/SAMV71x/app/11_DacDma/SAMV71_Xplained_Ultra/*.ini
+
+/SAMV71x/app/12_Fft - Afec/SAMV71_Xplained_Ultra/*
+!/SAMV71x/app/12_Fft - Afec/SAMV71_Xplained_Ultra/*.slo
+!/SAMV71x/app/12_Fft - Afec/SAMV71_Xplained_Ultra/*.xjrf
+!/SAMV71x/app/12_Fft - Afec/SAMV71_Xplained_Ultra/*.xqrf
+!/SAMV71x/app/12_Fft - Afec/SAMV71_Xplained_Ultra/*.ini
