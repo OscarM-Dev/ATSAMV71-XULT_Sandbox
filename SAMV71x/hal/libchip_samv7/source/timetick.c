@@ -62,6 +62,7 @@ SyTickDelayCounter_t DelayTimer;
  *  Process System Tick Event
  *  Increments the time-stamp counter.
  */
+/*
 void SysTick_Handler( void )
 {
 	 TimeEvent *pEvent;
@@ -79,7 +80,7 @@ void SysTick_Handler( void )
 		}
 		pEvent = pEvent->pNextEvent;
 	}
-}
+}*/
 
 void SetTimeEvent(TimeEvent* pEvent)
 {

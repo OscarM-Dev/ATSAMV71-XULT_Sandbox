@@ -23,6 +23,8 @@
 #include    "Button_Ctrl.h"
 /** Floating Point Unit */
 #include    "Fpu.h"
+//CODEC library.
+#include "CODEC.h"
 
 /*~~~~~~  Local definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -74,6 +76,7 @@ extern int main( void )
 
   /* Scheduler Inititalization */
   printf( "-- Scheduler Initialization --\n\r" ) ;
+  CODEC_Init();
 	SchM_Init(ScheduleConfig);
 	
 	/* Should never reach this code */
