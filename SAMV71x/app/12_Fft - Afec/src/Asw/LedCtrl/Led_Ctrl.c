@@ -1,6 +1,6 @@
 /****************************************************************************************************/
 /**
-\file       Led_Ctrl.c
+\file       led_ctrl.c
 \brief      MCU abstraction level - LED control
 \author     Abraham Tezmol
 \version    1.0
@@ -13,14 +13,14 @@
 * Include files
 *****************************************************************************************************/
 /** Own headers */
-#include     "Led_Ctrl.h"
+#include     "led_ctrl.h"
 /** Other modules */
 #include     "led.h"
 
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs 
 *****************************************************************************************************/
-uint8_t LedBlinkingHalt = 0;
+
 /****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 ****************************************************************************************************/
@@ -49,7 +49,7 @@ uint8_t LedBlinkingHalt = 0;
 * \param    void
 * \return   void
 */
-void LedCtrl_Configure( void )
+void vfnLedCtrl_Configure( void )
 {
 	LED_Configure( 0 ) ;
 	LED_Configure( 1 ) ;
@@ -57,62 +57,78 @@ void LedCtrl_Configure( void )
 
 /*****************************************************************************************************/
 /**
-* \brief    Turn a combination of 2 LEDs with a unique blinking pattern.
-			Call this function periodically @ 10ms to operate
-* \author   Abraham Tezmol
-* \param    void
-* \return   void
-*/
-void LedCtrl_BlinkingPattern(void)
+ * @brief Turn a combination of LED 0 with a unique blinking pattern.
+ * 
+ */
+void vfnLed0Ctrl_BlinkingPattern( void )
 {
-/* Global state machine status for LED flashing control  */
-	static uint8_t LocPatternIndex;
+    //Global state machine status for LED flashing control
+	static uint8_t gu8Index;
 
-    LocPatternIndex++;
-    if (LedBlinkingHalt)
+    gu8Index++;
+    
+    switch ( gu8Index )
     {
-       LED_Clear(0);
-       LED_Clear(1);
-    }
-    else
-    {
-      switch ((LocPatternIndex))
-      {
         case  1:
-            LED_Set(0);
+            LED_Set( 0 );
             break;
-        case  11:
-            LED_Set(0);
-            break;
+
         case  3:
-            LED_Clear(0);
+            LED_Clear( 0 );
             break;
+
+        case  11:
+            LED_Set( 0 );
+            break;
+
         case  13:
-            LED_Clear(0);
+            LED_Clear( 0 );
             break;
-        case  36:
-            LED_Set(1);
+
+        case 101:
+            gu8Index = 0;
             break;
-        case  46:
-            LED_Set(1);
-            break;
-        case  39:
-            LED_Clear(1);
-            break;
-        case  49:
-            LED_Clear(1);
-            break;
-         case 101:
-            LocPatternIndex = 0;
-            break;
+
         default:
             break;
-      }
     }
 }
 
-void LedCtrl_ToogleBlinkingPattern(void)
+/**
+ * @brief Turn a combination of LED 1 with a unique blinking pattern.
+ * 
+ */
+void vfnLed1Ctrl_BlinkingPattern( void )
 {
-  LedBlinkingHalt = !LedBlinkingHalt;
+    //Global state machine status for LED flashing control
+	static uint8_t gu8Index;
+
+    gu8Index++;
+    
+    switch ( gu8Index )
+    {
+        case  1:
+            LED_Set( 1 );
+            break;
+
+        case  3:
+            LED_Clear( 1 );
+            break;
+
+        case  11:
+            LED_Set( 1 );
+            break;
+
+        case  13:
+            LED_Clear( 1 );
+            break;
+
+        case 101:
+            gu8Index = 0;
+            break;
+            
+        default:
+            break;
+    }
 }
 /*******************************************************************************/

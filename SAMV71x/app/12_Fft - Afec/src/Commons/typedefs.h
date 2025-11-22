@@ -1,49 +1,53 @@
 /****************************************************************************************************/
 /**
-\file       led_ctrl.h
-\brief      MCU abstraction level - LED control
+\file       typedefs.h
+\brief      Variable types and common macros
 \author     Abraham Tezmol
 \version    1.0
-\project    Tau 
-\date       24/June/2016
+\date       19/06/2016
 */
 /****************************************************************************************************/
 
-#ifndef __LED_CTRL_H        /*prevent duplicated includes*/
-#define __LED_CTRL_H
+#ifndef TYPEDEFS_H        /*prevent duplicated includes*/ 
+#define    TYPEDEFS_H    
 
 /*****************************************************************************************************
 * Include files
 *****************************************************************************************************/
 
-/** Core modules */
-#include "compiler.h"
-
-/** Used modules */
-
 /*****************************************************************************************************
-* Declaration of module wide TYPEs 
+* Declaration of project wide TYPES
 *****************************************************************************************************/
 
+
+#define UINT8 	__attribute__	((aligned (1))) uint8_t
+#define UINT16 	__attribute__	((aligned (2))) uint16_t
+#define UINT32 	__attribute__	((aligned (4))) uint32_t
+
+#define INT8	__attribute__  	((aligned (1))) int8_t
+#define INT16 	__attribute__ 	((aligned (2))) int16_t
+#define INT32 	__attribute__ 	((aligned (4))) int32_t
+
+
+#define VUINT8 	__attribute__ 	((aligned (1))) volatile uint8_t
+#define VUINT16 __attribute__	((aligned (2))) volatile uint16_t
+#define VUINT32 __attribute__	((aligned (4))) volatile uint32_t
+
+#define VINT8 	__attribute__  	((aligned (1))) volatile int8_t
+#define VINT16 	__attribute__ 	((aligned (2))) volatile int16_t
+#define VINT32 	__attribute__ 	((aligned (4))) volatile int32_t
+
+typedef  void  ( * tPtr_to_function )( void );
 /*****************************************************************************************************
 * Definition of module wide MACROs / #DEFINE-CONSTANTs 
 *****************************************************************************************************/
 
+#ifndef NULL
+  #define    NULL    ( ( void * ) 0 )
+#endif
 
 /*****************************************************************************************************
 * Declaration of module wide FUNCTIONS
 *****************************************************************************************************/
 
-/** Configures LED 0 and 1 of SAMV71 board */
-void vfnLedCtrl_Configure( void );
-
-/** Turn a combination of LED 0 with a unique blinking pattern */
-void vfnLed0Ctrl_BlinkingPattern( void );
-
-/** Turn a combination of LED 1 with a unique blinking pattern */
-void vfnLed1Ctrl_BlinkingPattern( void );
-
-
-/**************************************************************************************************/
-
-#endif /* __LED_CTRL_H */
+#endif                                     /* TYPEDEFS_H */ 

@@ -13,7 +13,7 @@
 *****************************************************************************************************/
 /** Own headers */
 #include  "Button_Ctrl.h"
-#include	"SchM.h"
+#include "app_scheduler.h"
 
 
 /*****************************************************************************************************
@@ -63,7 +63,8 @@ static const Pin PinSW0 = PIN_SW0;
 static void SW0_Handler( const Pin* pPin )
 {
 	if ( pPin == &PinSW0 ) {
-		SchM_ActivateTask(TASK_SW0);
+		vfnCycleLed1Priority();
+		printf("Button pressed: LED1 new priority = %u\n\r", u8GetLed1Priority());
 	}
 }
 

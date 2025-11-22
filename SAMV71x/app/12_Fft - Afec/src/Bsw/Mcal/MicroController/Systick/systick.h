@@ -1,16 +1,16 @@
 /****************************************************************************************************/
 /**
-\file       led_ctrl.h
-\brief      MCU abstraction level - LED control
+\file       systick.h
+\brief      MCAL abstraction level - Core Systick control
 \author     Abraham Tezmol
 \version    1.0
 \project    Tau 
-\date       24/June/2016
+\date       10/July/2016
 */
 /****************************************************************************************************/
 
-#ifndef __LED_CTRL_H        /*prevent duplicated includes*/
-#define __LED_CTRL_H
+#ifndef __SYSTICK_H        /*prevent duplicated includes*/
+#define __SYSTICK_H
 
 /*****************************************************************************************************
 * Include files
@@ -18,12 +18,12 @@
 
 /** Core modules */
 #include "compiler.h"
-
-/** Used modules */
+#include "typedefs.h"
 
 /*****************************************************************************************************
 * Declaration of module wide TYPEs 
 *****************************************************************************************************/
+
 
 /*****************************************************************************************************
 * Definition of module wide MACROs / #DEFINE-CONSTANTs 
@@ -34,16 +34,9 @@
 * Declaration of module wide FUNCTIONS
 *****************************************************************************************************/
 
-/** Configures LED 0 and 1 of SAMV71 board */
-void vfnLedCtrl_Configure( void );
+/** SysTick Initialization function */
+int8_t sysTick_init(int32_t base_freq, tPtr_to_function sysTick_handler);
 
-/** Turn a combination of LED 0 with a unique blinking pattern */
-void vfnLed0Ctrl_BlinkingPattern( void );
+/****************************************************************************************************/
 
-/** Turn a combination of LED 1 with a unique blinking pattern */
-void vfnLed1Ctrl_BlinkingPattern( void );
-
-
-/**************************************************************************************************/
-
-#endif /* __LED_CTRL_H */
+#endif /* __SYSTICK_H */

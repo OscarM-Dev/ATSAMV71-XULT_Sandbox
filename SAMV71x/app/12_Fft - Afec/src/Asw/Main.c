@@ -14,9 +14,9 @@
 /** Main group of includes for board definitions, chip definitions and type definitions */
 #include    "Std_types.h"
 /** Task scheduler definitions */
-#include    "SchM.h"
+#include    "app_scheduler.h"
 /** LED control definitions */ 
-#include    "Led_Ctrl.h"
+#include    "led_ctrl.h"
 /** Watchdog control function prototypes definitions */
 #include    "Wdg.h"
 /** Button control operations */
@@ -61,7 +61,7 @@ extern int main( void )
 	/* Disable watchdog */
 	Wdg_Disable();
 	/* Configure LEDs */
-	LedCtrl_Configure();
+	vfnLedCtrl_Configure(); 
   /* Configure Button */  
   ButtonCtrl_ConfigureSW0Button();
   /* Enable I and D cache */
@@ -76,13 +76,19 @@ extern int main( void )
 
   /* Scheduler Inititalization */
   printf( "-- Scheduler Initialization --\n\r" ) ;
-  CODEC_Init();
-	SchM_Init(ScheduleConfig);
+  
+	/* Configure Non-preemtive scheduler */
+	vfnScheduler_Init();
 	
-	/* Should never reach this code */
+	/* Start scheduler */
+	vfnScheduler_Start();
+
+  CODEC_Init();
+	
+	/* Once all the basic services have been started, go to infinite loop to serviced activated tasks */
 	for(;;)
-    {
-		printf( "-- Unexpected Error at Scheduler Initialization --\n\r" ) ;
+  {
+		vfnTask_Scheduler();
 	}
 }
 

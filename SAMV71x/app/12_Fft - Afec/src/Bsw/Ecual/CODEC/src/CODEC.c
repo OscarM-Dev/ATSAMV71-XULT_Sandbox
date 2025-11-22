@@ -77,4 +77,10 @@ void CODEC_Init( void )
 {   
     //Initialize related MCU peripherals.
     I2C0_Init();
+
+    //Testing write and read to SW reset and ID register.
+    uint8_t data[2] = { 0xFF, 0xFF };
+
+    TWID_Write( &I2C0_control, WM8904_SLAVE_ADDRESS, 0x00, 1, data, 2, 0 );
+    TWID_Read( &I2C0_control, WM8904_SLAVE_ADDRESS, 0x00, 1, data, 2, 0 );
 }
