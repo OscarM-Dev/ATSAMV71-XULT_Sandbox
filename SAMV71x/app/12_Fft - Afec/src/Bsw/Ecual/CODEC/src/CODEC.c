@@ -104,9 +104,6 @@ void CODEC_Init( void )
     MCLK_Init();
     I2C0_Init();
 
-    //Testing write and read to SW reset and ID register.
-    uint8_t data[2] = { 0xFF, 0xFF };
-
-    TWID_Write( &I2C0_control, WM8904_SLAVE_ADDRESS, 0x00, 1, data, 2, 0 );
-    TWID_Read( &I2C0_control, WM8904_SLAVE_ADDRESS, 0x00, 1, data, 2, 0 );
+    //Configuring CODEC via I2C.
+    WM8904_Init( &I2C0_control, WM8904_SLAVE_ADDRESS, PMC_PCK_CSS_SLOW_CLK );
 }

@@ -38,6 +38,7 @@
 
 #include "board.h"
 #include <assert.h>
+#include "typedefs.h"
 /*----------------------------------------------------------------------------
  *         Local variables
  *----------------------------------------------------------------------------*/
@@ -62,8 +63,7 @@ SyTickDelayCounter_t DelayTimer;
  *  Process System Tick Event
  *  Increments the time-stamp counter.
  */
-/*
-void SysTick_Handler( void )
+void Tick_Handler( void )
 {
 	 TimeEvent *pEvent;
 	pEvent = pTimeEventList;
@@ -80,7 +80,7 @@ void SysTick_Handler( void )
 		}
 		pEvent = pEvent->pNextEvent;
 	}
-}*/
+}
 
 void SetTimeEvent(TimeEvent* pEvent)
 {
@@ -92,8 +92,9 @@ void SetTimeEvent(TimeEvent* pEvent)
  *  Systick interrupt handler will generates 1ms interrupt and increase a
  *  tickCount.
  *  \note IRQ handler must be configured before invoking this function.
+ * 
  */
-uint32_t TimeTick_Configure( void )
+uint32_t TimeTick_Configure( int32_t base_freq )
 {
 	uint8_t Mdiv_Val;
 	uint32_t Pck;
@@ -112,8 +113,8 @@ uint32_t TimeTick_Configure( void )
 	}
 
 	 DelayTimer.pTimer1 = NULL; DelayTimer.pTimer1=NULL;
-	/* Configure SysTick for 1 ms. */
-	if ( SysTick_Config( Pck/1000 ) ) {
+	/* Configure SysTick for 500 us. */
+	if ( SysTick_Config( SystemCoreClock / base_freq ) ) {
 		TRACE_ERROR("SysTick configuration error\n\r" ) ;
 		SysTickConfigured = 0;
 		return 1;

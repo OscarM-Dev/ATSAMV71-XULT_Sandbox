@@ -85,8 +85,7 @@ typedef struct _TimeEvent
 /*----------------------------------------------------------------------------
  *         Global functions
  *----------------------------------------------------------------------------*/
-
-uint32_t TimeTick_Configure( void ) ;
+uint32_t TimeTick_Configure( int32_t base_freq );
 
 void TimeTick_Increment( uint32_t dwInc ) ;
 

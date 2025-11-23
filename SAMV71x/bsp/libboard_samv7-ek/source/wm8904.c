@@ -93,19 +93,24 @@ void WM8904_Write(Twid *pTwid,
 
 static WM8904_PARA wm8904_access_slow[]=
 { 
-	{ 0x0000, 0},         /** R0   - SW Reset and ID */ 
-	{ 0x001A, 4},         /** R4   - Bias Control 0 */ 
-	{ 0x0047, 5},         /** R5   - VMID Control 0 */     /*insert_delay_ms 5*/
+	{ 0x0000, 0},         /** R0   - SW Reset and ID */
 
-	{ 0x0043, 5},         /** R5   - VMID Control 0 */ 
-	{ 0x000B, 4},         /** R4   - Bias Control 0 */ 
+	//Reference voltages and master bias.
+	{ 0x001A, 4},         /** R4   - Bias Control 0 */ //High performance BIAS, BIAS disabled
+	{ 0x0047, 5},         /** R5   - VMID Control 0 */ //VMID buff enabled, VMID res = 2 x 5k divider, VMID enabled  /*insert_delay_ms 5*/
+	{ 0x0043, 5},         /** R5   - VMID Control 0 */ //VMID buff enabled, VMID res = 2 x 50k divider, VMID enabled
+	{ 0x000B, 4},         /** R4   - Bias Control 0 */ //High performance BIAS, BIAS enabled
 
-	{ 0x0003, 0x0C},      /** R12  - Power Management 0 CC */ 
+	//Enabling analogue related.
+	{ 0x0003, 0x0C},      /** R12  - Power Management 0 CC */ //Left input PGA enabled, Right input PGA enabled 
+	{ 0x0003, 0x0E},      /** R14  - Power Management 2 */	  //Left HP output enabled, Right HP output enabled
+	{ 0x000C, 0x12},      /** R18  - Power Management 6 */	  //Left DAC enabled, Rigth DAC enabled
 
-	{ 0x0003, 0x0E},      /** R14  - Power Management 2 */ 
-	{ 0x000C, 0x12},      /** R18  - Power Management 6 */
+	//DAC related.
 	{ 0x0000, 0x21},      /** R33  - DAC Digital 1 */ 
-	{ 0x0000, 0x3D},      /** R61  - Analogue OUT12 ZC */ 
+	{ 0x0000, 0x3D},      /** R61  - Analogue OUT12 ZC */
+
+	//Charge pump related. 
 	{ 0x0001, 0x62},      /** R98  - Charge Pump 0 */ 
 	{ 0x0005, 0x68},     /** R104 - Class W 0 */ 
 
@@ -135,24 +140,29 @@ static WM8904_PARA wm8904_access_slow[]=
 	{ 0x0042, 0x19},      /** R25  - Audio Interface 1 */ 
 	{ 0x00E8, 0x1A},      /** R26  - Audio Interface 2 */ 
 	{ 0x0820, 0x1B},      /** R27  - Audio Interface 3 */ 
-	////////////////ADC
 
-	{ 0x0003, 0x0C},      /** R12  - Power Management 0 */ 
-	{ 0x000F, 0x12},      /** R18  - Power Management 6 */     /*insert_delay_ms 5*/
+	//ADC related.
+	{ 0x0003, 0x0C},      /** R12  - Power Management 0 */ //Left input PGA enabled, Right input PGA enabled 
+	{ 0x000F, 0x12},      /** R18  - Power Management 6 */ //Left DAC enabled, Rigth DAC enabled, Left ADC enabled, Right ADC enabled   /*insert_delay_ms 5*/
+	{ 0x0010, 0x2C},      /** R44  - Analogue Left Input 0 */	//Left input PGA not muted, Left input PGA Volume +4.8dB
+	{ 0x0010, 0x2D},      /** R45  - Analogue Right Input 0 */ 	//Right input PGA not muted, Right input PGA Volume +4.8dB
+	{ 0x0044, 0x2E},      /** R46  - Analogue Left Input 1 */ 	//IN1L as inverting pin, IN2L as non inverting pin, Single-Ended mode
+	{ 0x0044, 0x2F},      /** R47  - Analogue Right Input 1 */  //IN1R as inverting pin, IN2R as non inverting pin, Single-Ended mode
+	//R10 - Analogue ADC 0, default settings -->High performance OSR = 128
 
-	{ 0x0010, 0x2C},      /** R44  - Analogue Left Input 0 */ 
-	{ 0x0010, 0x2D},      /** R45  - Analogue Right Input 0 */ 
-	{ 0x0044, 0x2E},      /** R46  - Analogue Left Input 1 */ 
-	{ 0x0044, 0x2F},      /** R47  - Analogue Right Input 1 */
-
+	//Analogue HP related.
 	{ 0x0011, 0x5A},      /** R90  - Analogue HP 0 */ 
 	{ 0x0033, 0x5A},      /** R90  - Analogue HP 0 */ 
 
+	//DC servo related.
 	{ 0x000F, 0x43},      /** R67  - DC Servo 0 */ 
 	{ 0x00F0, 0x44},      /** R68  - DC Servo 1 */     /*insert_delay_ms 100*/
 
+	//Analogue HP related.
 	{ 0x0077, 0x5A},      /** R90  - Analogue HP 0 */ 
-	{ 0x00FF, 0x5A},      /** R90  - Analogue HP 0 */ 
+	{ 0x00FF, 0x5A},      /** R90  - Analogue HP 0 */
+
+	//Analogue OUT related. 
 	{ 0x00B9, 0x39},      /** R57  - Analogue OUT1 Left */ 
 	{ 0x00B9, 0x3A},      /** R58  - Analogue OUT1 Right */  
 };
@@ -426,7 +436,7 @@ uint8_t WM8904_Init(Twid *pTwid, uint32_t device,  uint32_t PCK)
 
 	if (PMC_MCKR_CSS_SLOW_CLK == PCK) {
 		size = sizeof(wm8904_access_slow) / 4 + 1;
-		for(count=0; count<size; count++) {
+		for(count=0; count<size - 1; count++) {
 			WM8904_Write(pTwid, device, wm8904_access_slow[count].address,
 							wm8904_access_slow[count].value);
 			if(((wm8904_access_slow[count].address==0x05)

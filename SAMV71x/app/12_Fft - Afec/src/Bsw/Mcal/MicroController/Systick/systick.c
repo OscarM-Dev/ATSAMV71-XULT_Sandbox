@@ -17,6 +17,9 @@
 #include "core_cm7.h"
 /** Definitions of System Clock Frequency (Core Clock) */
 #include "system_samv71.h"
+//Time tick.
+#include "timetick.h"
+
 
 /*****************************************************************************************************
 * Definition of  VARIABLEs - 
@@ -44,8 +47,7 @@ tPtr_to_function pfctnSysTick = (tPtr_to_function)NULL;
 int8_t sysTick_init(int32_t base_freq, tPtr_to_function sysTick_handler)
 {
 	pfctnSysTick = sysTick_handler;
-	TimeTick_Configure();
-	return SysTick_Config(SystemCoreClock / base_freq);
+	return 	TimeTick_Configure( base_freq );
 }
 
 /****************************************************************************************************/
@@ -62,5 +64,6 @@ void SysTick_Handler(void)
 	if (pfctnSysTick)
 	{
 		(*pfctnSysTick)();
+		Tick_Handler();
 	}
 }
