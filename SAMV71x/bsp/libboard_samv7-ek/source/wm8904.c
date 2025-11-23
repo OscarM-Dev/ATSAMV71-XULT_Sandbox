@@ -109,16 +109,24 @@ static WM8904_PARA wm8904_access_slow[]=
 	{ 0x0001, 0x62},      /** R98  - Charge Pump 0 */ 
 	{ 0x0005, 0x68},     /** R104 - Class W 0 */ 
 
-	//FLL setting,32.768KHZ MCLK input,12.288M output.
-	{ 0x0000, 0x74},     /** R116 - FLL Control 1 */ 
-	{ 0x0704, 0x75},     /** R117 - FLL Control 2 */ 
-	{ 0x8000, 0x76},     /** R118 - FLL Control 3 */ 
-	{ 0x1760, 0x77},     /** R119 - FLL Control 4 */ 
-	{ 0x0005, 0x74},     /** R116 - FLL Control 1 */     /*insert_delay_ms 5*/
+	//FLL setting,32.768KHZ MCLK input, 12.288Mhz output.
+	/*
+		FLL out clk = 12.288Mhz
+		FLL input clk ( MCLK ) = 32.768Khz
+		FVCO clk = 86.016Mhz
+		N.K = 656.25
+	*/
+	{ 0x0000, 0x74},     /** R116 - FLL Control 1 */ //FLL reset
+	{ 0x0704, 0x75},     /** R117 - FLL Control 2 */ //FLL outdiv = 8, freq of FLL control block = FVCO, FVC0 div = 16, FLL_FRATIO = 4 
+	{ 0x8000, 0x76},     /** R118 - FLL Control 3 */ //FLL_K = 32768
+	{ 0x1760, 0x77},     /** R119 - FLL Control 4 */ //FLL_GAIN = 1
+	/** R120 - FLL Control 5 */ //FLL src clk = MCLK ( 32.768 Khz ), FLL src clk div = 1
+	{ 0x0005, 0x74},     /** R116 - FLL Control 1 */ //FLL fractional mode enabled, FLL enabled   /*insert_delay_ms 5*/
 
-	{ 0x0C05, 0x15},      /** R21  - Clock Rates 1 */ 
-	{ 0x845E, 0x14},      /** R20  - Clock Rates 0 */     
-	{ 0x4006, 0x16},      /** R22  - Clock Rates 2 */
+	//SYSCLK setting, 
+	{ 0x0C05, 0x15},      /** R21  - Clock Rates 1 */ //fs = 48Khz, SYSCLK / fs ratio = 256
+	{ 0x845E, 0x14},      /** R20  - Clock Rates 0 */   
+	{ 0x4006, 0x16},      /** R22  - Clock Rates 2 */ //SYSCLK enabled, SYSCLK src = FLL out clk, DSP CLK enabled
 
 	//WM8904 IIS master
 	//BCLK=12.288MHz/8=1.536MHz

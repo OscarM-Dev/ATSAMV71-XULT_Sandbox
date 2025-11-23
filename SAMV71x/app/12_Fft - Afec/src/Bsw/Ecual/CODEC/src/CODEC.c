@@ -15,8 +15,10 @@
 //CLK related macros.
 #define FREQ_SCL            400000      //Desired SCL frequency.
 #define FREQ_PERIPH_CLK     150000000   //Peripheral CLK frequency.
+#define PMC_PCK2_PRES_VALUE 0           //Prescaler value for the PCK2 input clk.
 
 //Pin related macros.
+#define PCK2_PIN            1
 #define I2C_PINS            2
 
 
@@ -38,6 +40,12 @@ static Pin I2C0_PinConf[2] =
 };
 
 /**
+ * @brief PCK2 pin configuration struct.
+ * 
+ */
+static Pin PCK2_PinConf = { .mask = PIO_PA18B_PCK2, .pio = PIOA, .id = ID_PIOA, .type = PIO_PERIPH_B, .attribute = PIO_DEFAULT };
+
+/**
  * @brief I2C0 control structure.
  * 
  */
@@ -47,13 +55,12 @@ static Twid I2C0_control;
 /* Private functions.
 /* ************************************************************************** */
 /**
- * @brief This function initialices the I2C0 MCU peripheral.
+ * @brief This function initializes the I2C0 MCU peripheral.
  * 
  */
-static I2C0_Init( void )
+static void I2C0_Init( void )
 {
     //Enable required peripherals.
-    PMC_EnablePeripheral( ID_PIOA );
     PMC_EnablePeripheral( ID_TWIHS0 );
 
     //Configure pins.
@@ -66,6 +73,22 @@ static I2C0_Init( void )
     TWI_ConfigureMaster( I2C0_control.pTwi, FREQ_SCL, FREQ_PERIPH_CLK );
 }
 
+/**
+ * @brief This function initializes the PCK2 clk for the MCLK clk used by the CODEC.
+ * @note the PCK2 clk freq is 32.768Khz.
+ */
+static void MCLK_Init( void )
+{
+    //Initialize pin.
+    PIO_Configure( &PCK2_PinConf, PCK2_PIN );
+
+    //SLCK input src clk to external crystals osc 32.768Khz.
+    SUPC_SelectExtCrystal32K();
+
+    //Configure PCK2 
+    PMC_ConfigurePCK2( PMC_PCK_CSS_SLOW_CLK, PMC_PCK2_PRES_VALUE );
+}
+
 /* ************************************************************************** */
 /* Public functions.
 /* ************************************************************************** */
@@ -75,7 +98,10 @@ static I2C0_Init( void )
  */
 void CODEC_Init( void )
 {   
+
     //Initialize related MCU peripherals.
+    PMC_EnablePeripheral( ID_PIOA );
+    MCLK_Init();
     I2C0_Init();
 
     //Testing write and read to SW reset and ID register.
