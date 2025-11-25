@@ -12,6 +12,7 @@
 * Include files
 *****************************************************************************************************/
 
+#include <math.h>
 #include "FFT_Test.h"
 #include "fft.h"
 #include "arm_math.h"
@@ -24,6 +25,7 @@
 #define FFT_SIZE        1024u
 #define SAMPLE_RATE_HZ  10000u  /* 10 kHz sampling for voice testing */
 #define PI              3.14159265358979f
+#define TWO_PI          6.28318530717959f
 
 /*****************************************************************************************************
 * Local variables
@@ -48,6 +50,18 @@ static float bin_to_frequency(uint32_t bin_index);
 *****************************************************************************************************/
 
 /**
+ * \brief Fast approximation of sin(x).
+ * \param x Input angle in radians.
+ */
+static float fast_sin(float x)
+{
+    while (x > PI)      x -= TWO_PI;
+    while (x < -PI)     x += TWO_PI;
+    float x2 = x * x;
+    return x * (1.0f - x2 / 6.0f + (x2 * x2) / 120.0f);
+}
+
+/**
  * \brief Generate a pure sine wave at specified frequency
  * \param freq_hz     Frequency in Hz (e.g., 1000.0 for 1 kHz)
  * \param amplitude   Peak amplitude (0.0 to 1.0 recommended)
@@ -61,7 +75,7 @@ static void generate_sine_wave(float freq_hz, float amplitude, uint32_t num_samp
     for (i = 0; i < num_samples; i++)
     {
         /* Real part: sine wave sample */
-        test_input[2*i] = amplitude * arm_sin_f32(phase_increment * (float)i);
+        test_input[2*i] = amplitude * fast_sin(phase_increment * (float)i);
         /* Imaginary part: zero */
         test_input[2*i + 1] = 0.0f;
     }
@@ -82,7 +96,7 @@ static void generate_composite_signal(void)
     for (i = 0; i < FFT_SIZE; i++)
     {
         /* Real part: sum of two sine waves */
-        test_input[2*i] = 0.5f * arm_sin_f32(phase1 * (float)i) + 0.3f * arm_sin_f32(phase2 * (float)i);
+        test_input[2*i] = 0.5f * fast_sin(phase1 * (float)i) + 0.3f * fast_sin(phase2 * (float)i);
         /* Imaginary part: zero */
         test_input[2*i + 1] = 0.0f;
     }
@@ -224,18 +238,17 @@ void FFT_Test_Composite(void)
 }
 
 /**
- * \brief Test 4: Export first 100 spectrum bins for Excel plotting
- * Call this after running any FFT test to see the full spectrum
+ * \brief Test 4: Export Test spectrum
  */
-void FFT_Test_ExportSpectrum(void)
+void FFT_Test_ExportSpectrum(uint32_t samples )
 {
     uint32_t i;
     
     printf("\n\r=== FFT Spectrum Export (for Excel) ===\n\r");
     printf("Bin,Frequency_Hz,Power\n\r");
     
-    /* Export only first half (0 to Nyquist frequency) */
-    for (i = 0; i < 100 && i < FFT_SIZE/2; i++)
+
+    for (i = 0; i < samples && i < FFT_SIZE/2; i++)
     {
         printf("%lu,%.2f,%.6f\n\r", 
                (unsigned long)i, 
@@ -259,10 +272,17 @@ void FFT_Test_RunAll(void)
            (float)SAMPLE_RATE_HZ / (float)FFT_SIZE);
     printf("Nyquist Frequency: %lu Hz\n\r", (unsigned long)(SAMPLE_RATE_HZ / 2));
     
-    /* Run individual tests */
+    /* Run individual tests & export spectrum */
+    printf("   >>>    Starting full TEST   <<<   ");
     FFT_Test_1kHz();
+    FFT_Test_ExportSpectrum(200);
+    printf("   >>>    TEST #1 finalized   <<<   ");
     FFT_Test_2p5kHz();
+    FFT_Test_ExportSpectrum(400);
+    printf("   >>>    TEST #2 finalized   <<<   ");
     FFT_Test_Composite();
+    FFT_Test_ExportSpectrum(400);
+    printf("   >>>    TEST #3 finalized   <<<   ");
     
     printf("\n\r======================================\n\r");
     printf("   Validation Complete                \n\r");

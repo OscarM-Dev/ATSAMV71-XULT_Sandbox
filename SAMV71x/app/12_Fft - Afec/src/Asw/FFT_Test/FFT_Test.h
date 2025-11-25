@@ -42,7 +42,7 @@ void FFT_Test_Composite(void);
  * \brief Export spectrum data in CSV format for Excel
  * Use this to visualize the full frequency spectrum
  */
-void FFT_Test_ExportSpectrum(void);
+void FFT_Test_ExportSpectrum(uint32_t samples );
 
 /**
  * \brief Run complete FFT validation test suite
