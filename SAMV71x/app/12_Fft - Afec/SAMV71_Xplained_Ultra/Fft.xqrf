@@ -71,71 +71,79 @@
       <__></__>
      </Env.1>
      <IncludePath.0>
-      <Path>$(IRFDIR)..\..\..\hal\libchip_samv7\include\cmsis\CMSIS\Include</Path>
+      <Path>$(IRFDIR)..\src\Lib</Path>
       <SubDir>0</SubDir>
      </IncludePath.0>
      <IncludePath.1>
-      <Path>$(IRFDIR)..\src\Bsw\Mcal\MicroController\Fpu</Path>
+      <Path>$(IRFDIR)..\..\..\hal\libchip_samv7\include\cmsis\CMSIS\Include</Path>
       <SubDir>0</SubDir>
      </IncludePath.1>
      <IncludePath.10>
-      <Path>$(IRFDIR)..\..\..\bsp\libboard_samv7-ek</Path>
+      <Path>$(IRFDIR)..\..\..\hal\libchip_samv7</Path>
       <SubDir>0</SubDir>
      </IncludePath.10>
      <IncludePath.11>
-      <Path>$(IRFDIR)..\src</Path>
+      <Path>$(IRFDIR)..\..\..\bsp\libboard_samv7-ek\include</Path>
       <SubDir>0</SubDir>
      </IncludePath.11>
      <IncludePath.12>
-      <Path>$(IRFDIR)..\src\Commons</Path>
+      <Path>$(IRFDIR)..\..\..\bsp\libboard_samv7-ek</Path>
       <SubDir>0</SubDir>
      </IncludePath.12>
      <IncludePath.13>
-      <Path>$(IRFDIR)..\src\Bsw</Path>
+      <Path>$(IRFDIR)..\src</Path>
       <SubDir>0</SubDir>
      </IncludePath.13>
      <IncludePath.14>
-      <Path>$(IRFDIR)..\src\Bsw\Mcal\MicroController\Wdg</Path>
+      <Path>$(IRFDIR)..\src\Commons</Path>
       <SubDir>0</SubDir>
      </IncludePath.14>
      <IncludePath.15>
-      <Path>$(IRFDIR)..\src\Bsw\Services\SchM</Path>
+      <Path>$(IRFDIR)..\src\Bsw</Path>
       <SubDir>0</SubDir>
      </IncludePath.15>
      <IncludePath.16>
-      <Path>$(IRFDIR)..\src\Lib</Path>
+      <Path>$(IRFDIR)..\src\Bsw\Mcal\MicroController\Wdg</Path>
       <SubDir>0</SubDir>
      </IncludePath.16>
+     <IncludePath.17>
+      <Path>$(IRFDIR)..\src\Bsw\Services\SchM</Path>
+      <SubDir>0</SubDir>
+     </IncludePath.17>
+     <IncludePath.18>
+      <Path>$(IRFDIR)..\src\Lib</Path>
+      <SubDir>0</SubDir>
+     </IncludePath.18>
      <IncludePath.2>
-      <Path>$(IRFDIR)..\src\Asw\SchMTasks</Path>
+      <Path>$(IRFDIR)..\src\Bsw\Mcal\MicroController\Fpu</Path>
       <SubDir>0</SubDir>
      </IncludePath.2>
      <IncludePath.3>
-      <Path>$(IRFDIR)..\src\Bsw\Services\MemAlloc</Path>
+      <Path>$(IRFDIR)..\src\Asw\SchMTasks</Path>
       <SubDir>0</SubDir>
      </IncludePath.3>
      <IncludePath.4>
-      <Path>$(IRFDIR)..\src\Asw\ButtonCtrl</Path>
+      <Path>$(IRFDIR)..\src\Bsw\Services\MemAlloc</Path>
       <SubDir>0</SubDir>
      </IncludePath.4>
      <IncludePath.5>
-      <Path>$(IRFDIR)..\src\Asw\LedCtrl</Path>
+      <Path>$(IRFDIR)..\src\Asw\ButtonCtrl</Path>
       <SubDir>0</SubDir>
      </IncludePath.5>
      <IncludePath.6>
-      <Path>$(IRFDIR)..\..\..\hal\libchip_samv7\include\samv7</Path>
+      <Path>$(IRFDIR)..\src\Asw\LedCtrl</Path>
       <SubDir>0</SubDir>
      </IncludePath.6>
      <IncludePath.7>
-      <Path>$(IRFDIR)..\..\..\hal\utils</Path>
+      <Path>$(IRFDIR)..\src\Asw\FFT_Test</Path>
       <SubDir>0</SubDir>
      </IncludePath.7>
      <IncludePath.8>
-      <Path>$(IRFDIR)..\..\..\hal\libchip_samv7</Path>
+      <Path>$(IRFDIR)..\..\..\hal\libchip_samv7\include\samv7</Path>
       <SubDir>0</SubDir>
      </IncludePath.8>
      <IncludePath.9>
-      <Path>$(IRFDIR)..\..\..\bsp\libboard_samv7-ek\include</Path>
+      <Path>$(IRFDIR)..\..\..\hal\utils</Path>
       <SubDir>0</SubDir>
      </IncludePath.9>
      <mbBuild>
@@ -336,6 +344,13 @@
          <CompilerOptions>-x c  -mcpu=cortex-m7  -mthumb -mfloat-abi=softfp -mfpu=fpv5-sp-d16 $(DEFINES) $(INCLUDES)  -g3 -c -I $(IRFDIR) -o $(NOEXT).o $(EDNAME) -fno-builtin-fabs  -save-temps=obj -o $(OUTPUTDIR)$(NOEXT).o</CompilerOptions>
         </FileOptios>
        </File.3>
+       <File.4>
+        <FileName>$(IRFDIR)..\src\Asw\FFT_Test\FFT_Test.c</FileName>
+        <FileOptios>
+         <CompilerDefines>__SAMV71Q21__&#xA;ARM_MATH_CM7&#xA;__FPU_PRESENT</CompilerDefines>
+         <CompilerOptions>-x c  -mcpu=cortex-m7  -mthumb -mfloat-abi=softfp -mfpu=fpv5-sp-d16 $(DEFINES) $(INCLUDES)  -g3 -c -I $(IRFDIR) -o $(NOEXT).o $(EDNAME) -fno-builtin-fabs  -save-temps=obj -o $(OUTPUTDIR)$(NOEXT).o</CompilerOptions>
+        </FileOptios>
+       </File.4>
       </LinkGroup.4>
       <LinkGroup.5>
        <LinkGroupName>Bsw</LinkGroupName>

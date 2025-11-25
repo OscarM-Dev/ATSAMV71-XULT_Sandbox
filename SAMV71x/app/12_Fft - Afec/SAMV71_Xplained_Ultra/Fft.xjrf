@@ -335,6 +335,8 @@
       </PI.49>
       <PI.5>
        <Bookmarks_num_>0</Bookmarks_num_>
+       <C>52</C>
+       <L>175</L>
        <P>..\..\..\hal\libchip_samv7\source\tc.c</P>
        <VL>150</VL>
       </PI.5>
@@ -844,7 +846,7 @@
        <RelativeFileName>..\src\Asw\Main.c</RelativeFileName>
       </Editor.0>
       <Editor.1>
-       <FileBarIndex>5</FileBarIndex>
+       <FileBarIndex>4</FileBarIndex>
        <RectPosBottom>551</RectPosBottom>
        <RectPosLeft>78</RectPosLeft>
        <RectPosRight>724</RectPosRight>
@@ -860,7 +862,7 @@
        <RelativeFileName>..\..\..\toolset\gcc\startup_sam.c</RelativeFileName>
       </Editor.10>
       <Editor.2>
-       <FileBarIndex>7</FileBarIndex>
+       <FileBarIndex>5</FileBarIndex>
        <RectPosBottom>525</RectPosBottom>
        <RectPosLeft>52</RectPosLeft>
        <RectPosRight>698</RectPosRight>
@@ -892,7 +894,7 @@
        <RelativeFileName>..\..\..\hal\libchip_samv7\source\tc.c</RelativeFileName>
       </Editor.5>
       <Editor.6>
-       <FileBarIndex>4</FileBarIndex>
+       <FileBarIndex>6</FileBarIndex>
        <RectPosBottom>429</RectPosBottom>
        <RectPosLeft>66</RectPosLeft>
        <RectPosRight>606</RectPosRight>
@@ -908,7 +910,7 @@
        <RelativeFileName>..\..\..\hal\libchip_samv7\source\xdmac.c</RelativeFileName>
       </Editor.7>
       <Editor.8>
-       <FileBarIndex>6</FileBarIndex>
+       <FileBarIndex>7</FileBarIndex>
        <RectPosBottom>468</RectPosBottom>
        <RectPosLeft>104</RectPosLeft>
        <RectPosRight>765</RectPosRight>
@@ -937,10 +939,10 @@
       </EditorHistoryFile.3>
      </Documents.0>
      <Progress>
-      <b>734</b>
-      <l>626</l>
-      <r>1294</r>
-      <t>286</t>
+      <b>869</b>
+      <l>3266</l>
+      <r>3934</r>
+      <t>421</t>
      </Progress>
      <Watches>
       <ActiveWatchPane>2</ActiveWatchPane>
@@ -2095,7 +2097,7 @@
        </Items.0>
       </OSWindow>
       <ProjectWindow>
-       <Selected>board_lowlevel.c</Selected>
+       <Selected>Asw</Selected>
        <Items.0>
         <__>
          <Name>Files</Name>
@@ -2164,12 +2166,24 @@
           <__>
            <Name>Objects</Name>
            <Options>1</Options>
+           <Items.0>
+            <__>
+             <Name>MemAlloc.o</Name>
+             <Options>4</Options>
+            </__>
+           </Items.0>
           </__>
          </Items.5>
          <Items.6>
           <__>
            <Name>Source files</Name>
            <Options>1</Options>
+           <Items.0>
+            <__>
+             <Name>dac_dma.c</Name>
+             <Options>4</Options>
+            </__>
+           </Items.0>
           </__>
          </Items.6>
         </__>
@@ -2207,16 +2221,28 @@
             </Items.2>
             <Items.3>
              <__>
-              <Name>TC0_RC0</Name>
-              <Options>1</Options>
+              <Name>TC0_RAB0</Name>
+              <Options>0</Options>
              </__>
             </Items.3>
             <Items.4>
              <__>
+              <Name>TC0_CV0</Name>
+              <Options>0</Options>
+             </__>
+            </Items.4>
+            <Items.5>
+             <__>
+              <Name>TC0_RC0</Name>
+              <Options>1</Options>
+             </__>
+            </Items.5>
+            <Items.6>
+             <__>
               <Name>TC0_RC1</Name>
               <Options>1</Options>
              </__>
-            </Items.4>
+            </Items.6>
            </__>
           </Items.0>
          </__>
