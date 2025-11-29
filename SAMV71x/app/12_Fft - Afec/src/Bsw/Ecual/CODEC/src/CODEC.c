@@ -16,11 +16,19 @@
 #define FREQ_SCL            400000      //Desired SCL frequency.
 #define FREQ_PERIPH_CLK     150000000   //Peripheral CLK frequency.
 #define PMC_PCK2_PRES_VALUE 0           //Prescaler value for the PCK2 input clk.
+#define SSC_NULL_MST_CLK    0           //Null freq for SSC master clock.
+#define SSC_NULL_BITRATE    0           //Null bit rate for SSC.
 
 //Pin related macros.
 #define PCK2_PIN            1
 #define I2C_PINS            2
+#define I2S_PINS            3
 
+//SSC related macros.
+#define SSC_TCMR_CONFIG     SSC_TCMR_CKS_TK
+#define SSC_TFMR_DEFAULT    0
+#define SSC_RCMR_CONFIG     SSC_RCMR_START_RF_LOW | SSC_RCMR_CKG_CONTINUOUS | SSC_RCMR_CKO_NONE | SSC_RCMR_CKS_TK
+#define SSC_RFMR_CONFIG     SSC_RFMR_FSOS_NONE | SSC_RFMR_DATNB( 0 ) | SSC_RFMR_MSBF | SSC_RFMR_DATLEN( 15 )
 
 /* ************************************************************************** */
 /* Global data.
@@ -44,6 +52,17 @@ static Pin I2C0_PinConf[2] =
  * 
  */
 static Pin PCK2_PinConf = { .mask = PIO_PA18B_PCK2, .pio = PIOA, .id = ID_PIOA, .type = PIO_PERIPH_B, .attribute = PIO_DEFAULT };
+
+/**
+ * @brief SSC pin configuration struct. 
+ * 
+ */
+static Pin SSC_PinConf[3] =
+{
+    { .mask = PIO_PB1D_TK, .pio = PIOB, .id = ID_PIOB, .type = PIO_PERIPH_D, .attribute = PIO_DEFAULT },    //SCK pin , TK.
+    { .mask = PIO_PD24B_RF, .pio = PIOD, .id = ID_PIOD, .type = PIO_PERIPH_B, .attribute = PIO_DEFAULT },   //WS pin, RF.
+    { .mask = PIO_PA10C_RD, .pio = PIOA, .id = ID_PIOA, .type = PIO_PERIPH_C, .attribute = PIO_DEFAULT }    //SDIN pin, RD.
+};
 
 /**
  * @brief I2C0 control structure.
@@ -89,6 +108,25 @@ static void MCLK_Init( void )
     PMC_ConfigurePCK2( PMC_PCK_CSS_SLOW_CLK, PMC_PCK2_PRES_VALUE );
 }
 
+/**
+ * @brief This function initializes SSC MCU peripheral as I2S.
+ * @note RX clk is selected as TX clk which is TK input ( SCK ) 1.5Mhz.
+ */
+static void SSC_Init( void )
+{
+    //Enable and initialize required peripheral. -->SSC clk = 75Mhz.
+    SSC_Configure( SSC, SSC_NULL_BITRATE, SSC_NULL_MST_CLK );
+
+    //Initialize pins.
+    PIO_Configure( SSC_PinConf, I2S_PINS );
+
+    //Configure transmitter -->just for selecting TX clk as TK input ( SCK ).
+    SSC_ConfigureTransmitter( SSC, SSC_TCMR_CONFIG, SSC_TFMR_DEFAULT );
+
+    //Configure receiver.
+    SSC_ConfigureReceiver( SSC, SSC_RCMR_CONFIG, SSC_RFMR_CONFIG );
+}
+
 /* ************************************************************************** */
 /* Public functions.
 /* ************************************************************************** */
@@ -101,7 +139,10 @@ void CODEC_Init( void )
 
     //Initialize related MCU peripherals.
     PMC_EnablePeripheral( ID_PIOA );
+    PMC_EnablePeripheral( ID_PIOB );
+    PMC_EnablePeripheral( ID_PIOD );
     MCLK_Init();
+    SSC_Init();
     I2C0_Init();
 
     //Configuring CODEC via I2C.

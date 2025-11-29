@@ -134,16 +134,17 @@ static WM8904_PARA wm8904_access_slow[]=
 	{ 0x4006, 0x16},      /** R22  - Clock Rates 2 */ //SYSCLK enabled, SYSCLK src = FLL out clk, DSP CLK enabled
 
 	//WM8904 IIS master
-	//BCLK=12.288MHz/8=1.536MHz
-	//LRCK=1.536MHz/32=48KHz
-	//{ 0x0042, 0x18},    /** R24  - Audio Interface 0 */ 
-	{ 0x0042, 0x19},      /** R25  - Audio Interface 1 */ 
-	{ 0x00E8, 0x1A},      /** R26  - Audio Interface 2 */ 
-	{ 0x0820, 0x1B},      /** R27  - Audio Interface 3 */ 
+	//BCLK = 12.288MHz / 8 = 1.536MHz
+	//LRCK = 1.536MHz / 32 = 48KHz
+	//{ 0x0042, 0x18},    /** R24  - Audio Interface 0 */
+	/** R24  - Audio Interface 0 */ //Left audio channel data src is left ADC, Right audio channel data src is right ADC, Left DAC data is transmitted if left audio channel, Right DAC data is transmitted in right audio channel 
+	{ 0x0042, 0x19},      /** R25  - Audio Interface 1 */ //BCLK not inverted, BCLK is output, 16 bit data word length, I2S audio format
+	{ 0x00E8, 0x1A},      /** R26  - Audio Interface 2 */ //BCLK freq = SYSCLK / 8, 
+	{ 0x0820, 0x1B},      /** R27  - Audio Interface 3 */ //LRCLK is output, LRCLK rate = 32  
 
 	//ADC related.
 	{ 0x0003, 0x0C},      /** R12  - Power Management 0 */ //Left input PGA enabled, Right input PGA enabled 
-	{ 0x000F, 0x12},      /** R18  - Power Management 6 */ //Left DAC enabled, Rigth DAC enabled, Left ADC enabled, Right ADC enabled   /*insert_delay_ms 5*/
+	//{ 0x000F, 0x12},      /** R18  - Power Management 6 */ //Left DAC enabled, Rigth DAC enabled, Left ADC enabled, Right ADC enabled   /*insert_delay_ms 5*/
 	{ 0x0010, 0x2C},      /** R44  - Analogue Left Input 0 */	//Left input PGA not muted, Left input PGA Volume +4.8dB
 	{ 0x0010, 0x2D},      /** R45  - Analogue Right Input 0 */ 	//Right input PGA not muted, Right input PGA Volume +4.8dB
 	{ 0x0044, 0x2E},      /** R46  - Analogue Left Input 1 */ 	//IN1L as inverting pin, IN2L as non inverting pin, Single-Ended mode
@@ -468,6 +469,8 @@ uint8_t WM8904_Init(Twid *pTwid, uint32_t device,  uint32_t PCK)
 		printf("W: PCK not supported! \n\r");
 		while(1);
 	}
+
+	TWI_DisableMaster( pTwid->pTwi );
 	return 0;
 }
 

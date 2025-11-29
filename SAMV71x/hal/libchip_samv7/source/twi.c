@@ -384,3 +384,22 @@ void TWI_SendSTOPCondition(Twihs *pTwi)
 	pTwi->TWIHS_CR |= TWIHS_CR_STOP;
 }
 
+/**
+ * @brief This function enables the TWI master.
+ * 
+ * @param pTwi Pointer to TWI peripheral
+ */
+void TWI_EnableMaster( Twihs *pTwi )
+{
+	pTwi->TWIHS_CR = TWIHS_CR_MSEN;
+}
+
+/**
+ * @brief This function disables the TWI master.
+ * 
+ * @param pTwi Pointer to TWI peripheral.
+ */
+void TWI_DisableMaster( Twihs *pTwi )
+{
+	pTwi->TWIHS_CR = TWIHS_CR_MSDIS;
+}

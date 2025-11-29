@@ -107,6 +107,10 @@ extern uint32_t TWI_GetMaskedStatus(Twihs *pTwi);
 
 extern void TWI_SendSTOPCondition(Twihs *pTwi);
 
+extern void TWI_EnableMaster( Twihs *pTwi );
+
+extern void TWI_DisableMaster( Twihs *pTwi );
+
 #ifdef __cplusplus
 }
 #endif
