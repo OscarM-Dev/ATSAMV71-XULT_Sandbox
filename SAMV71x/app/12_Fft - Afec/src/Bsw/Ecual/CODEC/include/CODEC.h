@@ -17,4 +17,6 @@
 /* Public function prototypes.
 /* ************************************************************************** */
 void CODEC_Init( void );
+void CODEC_StartAudioCapture_MONO( void );
+void CODEC_StopAudioCapture_MONO( void );
 #endif

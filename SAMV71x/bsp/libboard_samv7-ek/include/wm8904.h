@@ -155,6 +155,8 @@ extern void WM8904_Write(Twid *pTwid, uint32_t device, uint32_t regAddr,
 extern uint8_t WM8904_Init(Twid *pTwid, uint32_t device, uint32_t PCK);
 extern uint8_t WM8904_VolumeSet(Twid *pTwid,  uint32_t device, uint16_t value);
 extern void WM8904_IN2R_IN1L(Twid *pTwid, uint32_t device);
+extern void WM8904_EnableLeftADC( Twid *pTwid, uint32_t device );
+extern void WM8904_DisableLeftADC( Twid *pTwid, uint32_t device );
 #endif // WM8904_H
 
 

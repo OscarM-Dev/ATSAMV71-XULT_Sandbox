@@ -19,7 +19,8 @@
 * Definition of  VARIABLEs - 
 *****************************************************************************************************/
 uint16_t dummy_counters_tasks[TASK_SCH_MAX_NUMBER_PRIORITY_TASKS] = { 0, 0, 0, 0, 0 };
-
+extern volatile uint8_t CaptureAudioFlag;
+extern volatile uint8_t Btn_press;
 /*****************************************************************************************************
 * Definition of module wide (CONST-) CONSTANTs 
 *****************************************************************************************************/
@@ -76,6 +77,21 @@ void TASK_1( void )
     /* Led1 executes in the TASK_1 */
     vfnLed1Ctrl_BlinkingPattern();
     dummy_counters_tasks[TASKP_1]++;
+
+    if ( Btn_press )
+    {   //Button pressed.
+        if ( CaptureAudioFlag )
+        {
+            CODEC_StartAudioCapture_MONO();
+        }
+
+        else
+        {
+            CODEC_StopAudioCapture_MONO();
+        }
+        
+        Btn_press = 0;
+    }
 }
 
 /**

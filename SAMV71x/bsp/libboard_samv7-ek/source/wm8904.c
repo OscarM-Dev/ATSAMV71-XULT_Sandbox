@@ -485,3 +485,31 @@ void WM8904_IN2R_IN1L(Twid *pTwid, uint32_t device)
 	WM8904_Write(pTwid, device, 0x2E, 0x0000);
 	WM8904_Write(pTwid, device, 0x2F, 0x0010);
 }
+
+/**
+ * @brief This function enables the CODEC left ADC, enabling the left MIC channel audio capture and transmission.
+ * 
+ * @param pTwid Pointer to TWID control structure.
+ * @param device CODEC I2C slave address.
+ */
+void WM8904_EnableLeftADC( Twid *pTwid, uint32_t device )
+{
+	//Transmit I2C CODEC instruction.
+	TWI_EnableMaster( pTwid->pTwi );
+	WM8904_Write( pTwid, device, 0x12, 0x000E ); /** R18  - Power Management 6 */ //Left DAC enabled, Rigth DAC enabled, Left ADC enabled.
+	TWI_DisableMaster( pTwid->pTwi );
+}
+
+/**
+ * @brief This function disables the CODEC left ADC, disabling the left MIC channel audio capture and transmission.
+ * 
+ * @param pTwid Pointer to TWID control structure.
+ * @param device CODEC I2C slave address.
+ */
+void WM8904_DisableLeftADC( Twid *pTwid, uint32_t device )
+{
+	//Transmit I2C CODEC instruction.
+	TWI_EnableMaster( pTwid->pTwi );
+	WM8904_Write( pTwid, device, 0x12, 0x000C ); /** R18  - Power Management 6 */ //Left DAC enabled, Rigth DAC enabled
+	TWI_DisableMaster( pTwid->pTwi );
+}

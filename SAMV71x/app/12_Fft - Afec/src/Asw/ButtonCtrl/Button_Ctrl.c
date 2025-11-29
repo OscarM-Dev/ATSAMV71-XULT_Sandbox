@@ -19,7 +19,8 @@
 /*****************************************************************************************************
 * Definition of module wide VARIABLEs 
 *****************************************************************************************************/
-
+extern volatile uint8_t CaptureAudioFlag;
+volatile uint8_t Btn_press = 0;
 /****************************************************************************************************
 * Declaration of module wide FUNCTIONs 
 ****************************************************************************************************/
@@ -63,8 +64,20 @@ static const Pin PinSW0 = PIN_SW0;
 static void SW0_Handler( const Pin* pPin )
 {
 	if ( pPin == &PinSW0 ) {
-		vfnCycleLed1Priority();
-		printf("Button pressed: LED1 new priority = %u\n\r", u8GetLed1Priority());
+		//vfnCycleLed1Priority();
+		//printf("Button pressed: LED1 new priority = %u\n\r", u8GetLed1Priority());
+		Btn_press = 1;
+
+		//Toggle flag.
+		if ( CaptureAudioFlag )
+		{
+			CaptureAudioFlag = 0;
+		}
+
+		else
+		{
+			CaptureAudioFlag = 1;
+		}
 	}
 }
 

@@ -33,6 +33,7 @@
 /* ************************************************************************** */
 /* Global data.
 /* ************************************************************************** */
+volatile uint8_t CaptureAudioFlag = 0;
 
 /* ************************************************************************** */
 /* Private data.
@@ -131,12 +132,12 @@ static void SSC_Init( void )
 /* Public functions.
 /* ************************************************************************** */
 /**
- * @brief 
- * 
+ * @brief This function initializes all the MCU configurations and the CODEC configuration for audio capture.
+ * @note Mono audio capture is used with the Left MIC channel due to RAM limitations.
  */
 void CODEC_Init( void )
 {   
-
+    printf( "Initializing CODEC \n\r" );
     //Initialize related MCU peripherals.
     PMC_EnablePeripheral( ID_PIOA );
     PMC_EnablePeripheral( ID_PIOB );
@@ -147,4 +148,26 @@ void CODEC_Init( void )
 
     //Configuring CODEC via I2C.
     WM8904_Init( &I2C0_control, WM8904_SLAVE_ADDRESS, PMC_PCK_CSS_SLOW_CLK );
+}
+
+/**
+ * @brief This function triggers the start for the mono audio capture.
+ * 
+ */
+void CODEC_StartAudioCapture_MONO( void )
+{
+    printf( "Starting audio capture \n\r" );
+    WM8904_EnableLeftADC( &I2C0_control, WM8904_SLAVE_ADDRESS );
+    SSC_EnableReceiver( SSC );
+}
+
+/**
+ * @brief This function triggers the stop for the mono audio capture.
+ * 
+ */
+void CODEC_StopAudioCapture_MONO( void )
+{
+    printf( "Stoping audio capture \n\r" );
+    SSC_DisableReceiver( SSC );
+    WM8904_DisableLeftADC( &I2C0_control, WM8904_SLAVE_ADDRESS );
 }
