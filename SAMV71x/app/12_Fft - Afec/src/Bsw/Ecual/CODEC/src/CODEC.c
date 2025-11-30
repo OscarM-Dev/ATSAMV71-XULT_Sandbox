@@ -29,15 +29,24 @@
 #define SSC_TFMR_DEFAULT    0
 #define SSC_RCMR_CONFIG     SSC_RCMR_START_RF_LOW | SSC_RCMR_CKG_CONTINUOUS | SSC_RCMR_CKO_NONE | SSC_RCMR_CKS_TK
 #define SSC_RFMR_CONFIG     SSC_RFMR_FSOS_NONE | SSC_RFMR_DATNB( 0 ) | SSC_RFMR_MSBF | SSC_RFMR_DATLEN( 15 )
+#define SSC_IER_CONFIG      SSC_IER_RXRDY
+#define SSC_IDR_CONFIG      SSC_IDR_RXRDY
+#define SSC_RXRDY_ISR_PRIO  1
+
+//CODEC related.
+#define DATA_BUFFER_SIZE    1000
 
 /* ************************************************************************** */
 /* Global data.
 /* ************************************************************************** */
 volatile uint8_t CaptureAudioFlag = 0;
+uint16_t CODEC_Data[DATA_BUFFER_SIZE];
 
 /* ************************************************************************** */
 /* Private data.
 /* ************************************************************************** */
+static uint32_t i = 0;
+
 /**
  * @brief I2C0 pin configuration struct.
  * 
@@ -126,11 +135,49 @@ static void SSC_Init( void )
 
     //Configure receiver.
     SSC_ConfigureReceiver( SSC, SSC_RCMR_CONFIG, SSC_RFMR_CONFIG );
+
+    //Configure NVIC for SSC interrupts.
+    NVIC_SetPriority( SSC_IRQn, SSC_RXRDY_ISR_PRIO );
+    NVIC_EnableIRQ( SSC_IRQn );
+}
+
+/**
+ * @brief This function clears the data buffer for captured audio.
+ * 
+ * @param data Pointer to data buffer.
+ * @param bufferSize Number of buffer data elements.
+ */
+static void Clear_DataBuffer( uint16_t *data, uint32_t bufferSize )
+{
+    uint32_t i = 0;
+
+    for ( i = 0; i < bufferSize; i++ )
+    {
+        data[i] = 0;
+    }
 }
 
 /* ************************************************************************** */
 /* Public functions.
 /* ************************************************************************** */
+/**
+ * @brief This function is the SSC ISR.
+ * @note For now only RXRDY interrupt calls this function.
+ */
+void SSC_Handler( void )
+{
+    if ( i < DATA_BUFFER_SIZE )
+    {   //Store data received.
+        CODEC_Data[i] = ( uint16_t ) SSC_Read( SSC );
+        i++;
+    }
+
+    else
+    {   //Store and ignore data received.
+        uint32_t temporal_data = SSC_Read( SSC );
+    }
+}
+
 /**
  * @brief This function initializes all the MCU configurations and the CODEC configuration for audio capture.
  * @note Mono audio capture is used with the Left MIC channel due to RAM limitations.
@@ -157,7 +204,9 @@ void CODEC_Init( void )
 void CODEC_StartAudioCapture_MONO( void )
 {
     printf( "Starting audio capture \n\r" );
+    Clear_DataBuffer( CODEC_Data, DATA_BUFFER_SIZE );
     WM8904_EnableLeftADC( &I2C0_control, WM8904_SLAVE_ADDRESS );
+    SSC_EnableInterrupts( SSC, SSC_IER_CONFIG );
     SSC_EnableReceiver( SSC );
 }
 
@@ -168,6 +217,8 @@ void CODEC_StartAudioCapture_MONO( void )
 void CODEC_StopAudioCapture_MONO( void )
 {
     printf( "Stoping audio capture \n\r" );
+    SSC_DisableInterrupts( SSC, SSC_IDR_CONFIG );
     SSC_DisableReceiver( SSC );
+    i = 0;
     WM8904_DisableLeftADC( &I2C0_control, WM8904_SLAVE_ADDRESS );
 }

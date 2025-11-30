@@ -145,8 +145,8 @@ static WM8904_PARA wm8904_access_slow[]=
 	//ADC related.
 	{ 0x0003, 0x0C},      /** R12  - Power Management 0 */ //Left input PGA enabled, Right input PGA enabled 
 	//{ 0x000F, 0x12},      /** R18  - Power Management 6 */ //Left DAC enabled, Rigth DAC enabled, Left ADC enabled, Right ADC enabled   /*insert_delay_ms 5*/
-	{ 0x0010, 0x2C},      /** R44  - Analogue Left Input 0 */	//Left input PGA not muted, Left input PGA Volume +4.8dB
-	{ 0x0010, 0x2D},      /** R45  - Analogue Right Input 0 */ 	//Right input PGA not muted, Right input PGA Volume +4.8dB
+	{ 0x0005, 0x2C},      /** R44  - Analogue Left Input 0 */	//Left input PGA not muted, Left input PGA Volume +0dB
+	{ 0x0005, 0x2D},      /** R45  - Analogue Right Input 0 */ 	//Right input PGA not muted, Right input PGA Volume +0dB
 	{ 0x0044, 0x2E},      /** R46  - Analogue Left Input 1 */ 	//IN1L as inverting pin, IN2L as non inverting pin, Single-Ended mode
 	{ 0x0044, 0x2F},      /** R47  - Analogue Right Input 1 */  //IN1R as inverting pin, IN2R as non inverting pin, Single-Ended mode
 	//R10 - Analogue ADC 0, default settings -->High performance OSR = 128
