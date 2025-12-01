@@ -19,4 +19,5 @@
 void CODEC_Init( void );
 void CODEC_StartAudioCapture_MONO( void );
 void CODEC_StopAudioCapture_MONO( void );
+void CODEC_PrintAudioCaptured_MONO( uint16_t *data, uint32_t size );
 #endif

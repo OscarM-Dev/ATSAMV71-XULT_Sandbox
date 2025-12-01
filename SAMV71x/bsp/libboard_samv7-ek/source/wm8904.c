@@ -93,18 +93,20 @@ void WM8904_Write(Twid *pTwid,
 
 static WM8904_PARA wm8904_access_slow[]=
 { 
-	{ 0x0000, 0},         /** R0   - SW Reset and ID */
+	//{ 0xFFFF, 0},         /** R0   - SW Reset and ID */
 
 	//Reference voltages and master bias.
-	{ 0x001A, 4},         /** R4   - Bias Control 0 */ //High performance BIAS, BIAS disabled
-	{ 0x0047, 5},         /** R5   - VMID Control 0 */ //VMID buff enabled, VMID res = 2 x 5k divider, VMID enabled  /*insert_delay_ms 5*/
-	{ 0x0043, 5},         /** R5   - VMID Control 0 */ //VMID buff enabled, VMID res = 2 x 50k divider, VMID enabled
-	{ 0x000B, 4},         /** R4   - Bias Control 0 */ //High performance BIAS, BIAS enabled
+	{ 0x0008, 0x04},	  /** R4   - Bias Control 0 */ //High performance BIAS
+	{ 0x0047, 0x05},      /** R5   - VMID Control 0 */ //VMID buff enabled, VMID res = 2 x 5k divider, VMID enabled  /*insert_delay_ms 5*/
+	{ 0x0043, 0x05},      /** R5   - VMID Control 0 */ //VMID buff enabled, VMID res = 2 x 50k divider, VMID enabled
+	{ 0x0009, 0x04},      /** R4   - Bias Control 0 */ //High performance BIAS, BIAS enabled
 
 	//Enabling analogue related.
+	{ 0x0044, 0x2E},      /** R46  - Analogue Left Input 1 */ 	//IN1L as inverting pin, IN2L as non inverting pin, Single-Ended mode
+	{ 0x0044, 0x2F},      /** R47  - Analogue Right Input 1 */  //IN1R as inverting pin, IN2R as non inverting pin, Single-Ended mode
 	{ 0x0003, 0x0C},      /** R12  - Power Management 0 CC */ //Left input PGA enabled, Right input PGA enabled 
 	{ 0x0003, 0x0E},      /** R14  - Power Management 2 */	  //Left HP output enabled, Right HP output enabled
-	{ 0x000C, 0x12},      /** R18  - Power Management 6 */	  //Left DAC enabled, Rigth DAC enabled
+	//{ 0x000C, 0x12},      /** R18  - Power Management 6 */	  //Left DAC enabled, Rigth DAC enabled
 
 	//DAC related.
 	{ 0x0000, 0x21},      /** R33  - DAC Digital 1 */ 
@@ -112,7 +114,7 @@ static WM8904_PARA wm8904_access_slow[]=
 
 	//Charge pump related. 
 	{ 0x0001, 0x62},      /** R98  - Charge Pump 0 */ 
-	{ 0x0005, 0x68},     /** R104 - Class W 0 */ 
+	{ 0x0001, 0x68},     /** R104 - Class W 0 */ 
 
 	//FLL setting,32.768KHZ MCLK input, 12.288Mhz output.
 	/*
@@ -129,28 +131,28 @@ static WM8904_PARA wm8904_access_slow[]=
 	{ 0x0005, 0x74},     /** R116 - FLL Control 1 */ //FLL fractional mode enabled, FLL enabled   /*insert_delay_ms 5*/
 
 	//SYSCLK setting, 
-	{ 0x0C05, 0x15},      /** R21  - Clock Rates 1 */ //fs = 48Khz, SYSCLK / fs ratio = 256
-	{ 0x845E, 0x14},      /** R20  - Clock Rates 0 */   
+	{ 0x2400, 0x15},      /** R21  - Clock Rates 1 */ //fs = 8Khz, SYSCLK / fs ratio = 1536
+	{ 0x0000, 0x14},      /** R20  - Clock Rates 0 */
 	{ 0x4006, 0x16},      /** R22  - Clock Rates 2 */ //SYSCLK enabled, SYSCLK src = FLL out clk, DSP CLK enabled
 
 	//WM8904 IIS master
-	//BCLK = 12.288MHz / 8 = 1.536MHz
-	//LRCK = 1.536MHz / 32 = 48KHz
+	//BCLK = 12.288MHz / 48 = 256KHz
+	//LRCK = 256Khz / 32 = 8KHz
 	//{ 0x0042, 0x18},    /** R24  - Audio Interface 0 */
 	/** R24  - Audio Interface 0 */ //Left audio channel data src is left ADC, Right audio channel data src is right ADC, Left DAC data is transmitted if left audio channel, Right DAC data is transmitted in right audio channel 
 	{ 0x0042, 0x19},      /** R25  - Audio Interface 1 */ //BCLK not inverted, BCLK is output, 16 bit data word length, I2S audio format
-	{ 0x00E8, 0x1A},      /** R26  - Audio Interface 2 */ //BCLK freq = SYSCLK / 8, 
+	{ 0x0014, 0x1A},      /** R26  - Audio Interface 2 */ //BCLK freq = SYSCLK / 48,
 	{ 0x0820, 0x1B},      /** R27  - Audio Interface 3 */ //LRCLK is output, LRCLK rate = 32  
-
-	//ADC related.
-	{ 0x0003, 0x0C},      /** R12  - Power Management 0 */ //Left input PGA enabled, Right input PGA enabled 
-	//{ 0x000F, 0x12},      /** R18  - Power Management 6 */ //Left DAC enabled, Rigth DAC enabled, Left ADC enabled, Right ADC enabled   /*insert_delay_ms 5*/
-	{ 0x0005, 0x2C},      /** R44  - Analogue Left Input 0 */	//Left input PGA not muted, Left input PGA Volume +0dB
-	{ 0x0005, 0x2D},      /** R45  - Analogue Right Input 0 */ 	//Right input PGA not muted, Right input PGA Volume +0dB
-	{ 0x0044, 0x2E},      /** R46  - Analogue Left Input 1 */ 	//IN1L as inverting pin, IN2L as non inverting pin, Single-Ended mode
-	{ 0x0044, 0x2F},      /** R47  - Analogue Right Input 1 */  //IN1R as inverting pin, IN2R as non inverting pin, Single-Ended mode
+	//{ 0x000F, 0x12},      /** R18  - Power Management 6 */	  //Left DAC enabled, Rigth DAC enabled, Left ADC enabled, Right ADC enabled. /*insert_delay_ms 5*/
+	
+	//ADC related
+	{ 0x0010, 0x2C},      /** R44  - Analogue Left Input 0 */	//Left input PGA not muted, Left input PGA Volume +4.8dB
+	{ 0x0010, 0x2D},      /** R45  - Analogue Right Input 0 */ 	//Right input PGA not muted, Right input PGA Volume +4.8dB
+	//{ 0x0070, 0x26},	  /** R38  - ADC Digital  0 */ 	//Voice mode 3 fc 267Hz, High pass filter enabled.
+	{ 0x01C0, 0x24},	  /** R36  - ADC Digital Volume Left */ //Update ADC left volume, Volume +0dB
+	{ 0x01C0, 0x25},	  /** R37  - ADC Digital Volume Right */ //Update ADC rigth volume, Volume +0dB
 	//R10 - Analogue ADC 0, default settings -->High performance OSR = 128
-
+	
 	//Analogue HP related.
 	{ 0x0011, 0x5A},      /** R90  - Analogue HP 0 */ 
 	{ 0x0033, 0x5A},      /** R90  - Analogue HP 0 */ 

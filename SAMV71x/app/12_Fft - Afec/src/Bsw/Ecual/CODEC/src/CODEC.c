@@ -25,16 +25,17 @@
 #define I2S_PINS            3
 
 //SSC related macros.
-#define SSC_TCMR_CONFIG     SSC_TCMR_CKS_TK
-#define SSC_TFMR_DEFAULT    0
-#define SSC_RCMR_CONFIG     SSC_RCMR_START_RF_LOW | SSC_RCMR_CKG_CONTINUOUS | SSC_RCMR_CKO_NONE | SSC_RCMR_CKS_TK
-#define SSC_RFMR_CONFIG     SSC_RFMR_FSOS_NONE | SSC_RFMR_DATNB( 0 ) | SSC_RFMR_MSBF | SSC_RFMR_DATLEN( 15 )
+#define SSC_TCMR_CONFIG     SSC_TCMR_PERIOD( 0 ) | SSC_TCMR_STTDLY( 1 ) | SSC_TCMR_START_TF_EDGE | SSC_TCMR_CKG_CONTINUOUS | SSC_TCMR_CKO_NONE | SSC_TCMR_CKS_TK
+#define SSC_TFMR_CONFIG     SSC_TFMR_FSEDGE_POSITIVE | SSC_TFMR_FSOS_NONE | SSC_TFMR_DATNB( 0 ) | SSC_TFMR_MSBF | SSC_TFMR_DATLEN( 15 )
+#define SSC_RCMR_CONFIG     SSC_RCMR_PERIOD( 0 ) | SSC_RCMR_STTDLY( 1 ) | SSC_RCMR_START_RF_FALLING | SSC_RCMR_CKG_CONTINUOUS | SSC_RCMR_CKI | SSC_RCMR_CKO_NONE | SSC_RCMR_CKS_TK
+#define SSC_RFMR_CONFIG     SSC_RFMR_FSEDGE_POSITIVE | SSC_RFMR_FSOS_NONE | SSC_RFMR_DATNB( 0 ) | SSC_RFMR_MSBF | SSC_RFMR_DATLEN( 15 )
 #define SSC_IER_CONFIG      SSC_IER_RXRDY
 #define SSC_IDR_CONFIG      SSC_IDR_RXRDY
+#define SSC_IDR_DISABLE_ALL 0xFFFFFFFF
 #define SSC_RXRDY_ISR_PRIO  1
 
 //CODEC related.
-#define DATA_BUFFER_SIZE    1000
+#define DATA_BUFFER_SIZE    128000
 
 /* ************************************************************************** */
 /* Global data.
@@ -131,10 +132,17 @@ static void SSC_Init( void )
     PIO_Configure( SSC_PinConf, I2S_PINS );
 
     //Configure transmitter -->just for selecting TX clk as TK input ( SCK ).
-    SSC_ConfigureTransmitter( SSC, SSC_TCMR_CONFIG, SSC_TFMR_DEFAULT );
+    SSC_ConfigureTransmitter( SSC, SSC_TCMR_CONFIG, SSC_TFMR_CONFIG );
 
     //Configure receiver.
     SSC_ConfigureReceiver( SSC, SSC_RCMR_CONFIG, SSC_RFMR_CONFIG );
+
+    //Disable transmitter and receiver.
+    SSC_DisableTransmitter( SSC );
+    SSC_DisableReceiver( SSC );
+
+    //Disable interrupts.
+    SSC_DisableInterrupts( SSC, SSC_IDR_DISABLE_ALL );
 
     //Configure NVIC for SSC interrupts.
     NVIC_SetPriority( SSC_IRQn, SSC_RXRDY_ISR_PRIO );
@@ -221,4 +229,24 @@ void CODEC_StopAudioCapture_MONO( void )
     SSC_DisableReceiver( SSC );
     i = 0;
     WM8904_DisableLeftADC( &I2C0_control, WM8904_SLAVE_ADDRESS );
+    CODEC_PrintAudioCaptured_MONO( CODEC_Data, DATA_BUFFER_SIZE );
+}
+
+/**
+ * @brief This function prints all the data audio captured via serial terminal.
+ * @note Is useful to take this printed data in TeraTerm for ploting.
+ * @note Can be used for the raw audio captured or the fft audio captured.
+ * 
+ * @param data Pointer to data buffer.
+ * @param size Number of data elements of buffer.
+ */
+void CODEC_PrintAudioCaptured_MONO( uint16_t *data, uint32_t size )
+{
+    uint32_t i = 0;
+
+    //Printing data.
+    for ( i = 0; i < size; i += 5 )
+    {
+        printf( "AUDIO_DATA[%u] = %u\n\r", i, data[i] );
+    }
 }
