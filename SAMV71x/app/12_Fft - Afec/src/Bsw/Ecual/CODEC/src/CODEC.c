@@ -36,14 +36,13 @@
 #define SSC_RXRDY_ISR_PRIO  1
 
 //CODEC related.
-#define DATA_BUFFER_SIZE    2000
+#define DATA_BUFFER_SIZE    64000  //For 8s audio capture.
 
 /* ************************************************************************** */
 /* Global data.
 /* ************************************************************************** */
 volatile uint8_t CaptureAudioFlag = 0;
-//uint16_t CODEC_Data[DATA_BUFFER_SIZE];
-uint32_t CODEC_Data[DATA_BUFFER_SIZE];
+int32_t CODEC_Data[DATA_BUFFER_SIZE];
 
 /* ************************************************************************** */
 /* Private data.
@@ -157,7 +156,7 @@ static void SSC_Init( void )
  * @param data Pointer to data buffer.
  * @param bufferSize Number of buffer data elements.
  */
-static void Clear_DataBuffer( uint32_t *data, uint32_t bufferSize )
+static void Clear_DataBuffer( int32_t *data, uint32_t bufferSize )
 {
     uint32_t i = 0;
 
@@ -178,8 +177,7 @@ void SSC_Handler( void )
 {
     if ( i < DATA_BUFFER_SIZE )
     {   //Store data received.
-        //CODEC_Data[i] = (int16_t)(SSC_Read(SSC) & 0xFFFF);
-        CODEC_Data[i] = SSC_Read(SSC) >> 8;
+        CODEC_Data[i] = ( ( int32_t ) SSC_Read( SSC ) ) >> 8;
         i++;
     }
 
@@ -301,12 +299,12 @@ void CODEC_StopAudioCapture_MONO( void )
  * @param data Pointer to data buffer.
  * @param size Number of data elements of buffer.
  */
-void CODEC_PrintAudioCaptured_MONO(uint32_t *data, uint32_t size)
+void CODEC_PrintAudioCaptured_MONO( int32_t *data, uint32_t size )
 {
     uint32_t i;
 
     for (i = 0; i < size; i += 5)
     {
-        printf("AUDIO_DATA[%lu] = %d\n\r", (unsigned long)i, (int32_t)data[i]);
+        printf( "AUDIO_DATA[%u] = %d\n\r", i, data[i] );
     }
 }
