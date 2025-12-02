@@ -146,10 +146,8 @@ static WM8904_PARA wm8904_access_slow[]=
 	//{ 0x000F, 0x12},      /** R18  - Power Management 6 */	  //Left DAC enabled, Rigth DAC enabled, Left ADC enabled, Right ADC enabled. /*insert_delay_ms 5*/
 	
 	//ADC related
-	//{ 0x0010, 0x2C},      /** R44  - Analogue Left Input 0 */	//Left input PGA not muted, Left input PGA Volume +4.8dB
-	//{ 0x0010, 0x2D},      /** R45  - Analogue Right Input 0 */ 	//Right input PGA not muted, Right input PGA Volume +4.8dB
-	{ 0x0030, 0x2C},        /** R44  - Analogue Left Input 0 */ 
-	{ 0x0030, 0x2D},        /** R45  - Analogue Right Input 0 */
+	{ 0x0010, 0x2C},      /** R44  - Analogue Left Input 0 */	//Left input PGA not muted, Left input PGA Volume +4.8dB
+	{ 0x0010, 0x2D},      /** R45  - Analogue Right Input 0 */ 	//Right input PGA not muted, Right input PGA Volume +4.8dB
 	{ 0x0070, 0x26},	  /** R38  - ADC Digital  0 */ 	//Voice mode 3 fc 267Hz, High pass filter enabled.
 	{ 0x01C0, 0x24},	  /** R36  - ADC Digital Volume Left */ //Update ADC left volume, Volume +0dB
 	{ 0x01C0, 0x25},	  /** R37  - ADC Digital Volume Right */ //Update ADC rigth volume, Volume +0dB

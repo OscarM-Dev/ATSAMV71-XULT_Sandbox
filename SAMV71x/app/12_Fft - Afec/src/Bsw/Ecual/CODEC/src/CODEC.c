@@ -216,7 +216,7 @@ void CODEC_Init( void )
 
     WM8904_IN2R_IN1L(&I2C0_control, WM8904_SLAVE_ADDRESS);
 
-    WM8904_BoostADCVolume(&I2C0_control, WM8904_SLAVE_ADDRESS);
+    //WM8904_BoostADCVolume(&I2C0_control, WM8904_SLAVE_ADDRESS);
 
     TWI_EnableMaster(I2C0_control.pTwi);
     uint16_t id = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x00);
@@ -286,8 +286,9 @@ void CODEC_StopAudioCapture_MONO( void )
 
     AUDIO_FFT_ProcessCapturedAudio(CODEC_Data, used);
 
+    printf("=== CODEC audio captured start ===\n\r\n\r");
     CODEC_PrintAudioCaptured_MONO( CODEC_Data, DATA_BUFFER_SIZE );
-
+    printf("=== CODEC audio captured done ===\n\r\n\r");
     i = 0;
 }
 
