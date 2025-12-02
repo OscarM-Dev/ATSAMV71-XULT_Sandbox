@@ -23,30 +23,18 @@
 #include    "Button_Ctrl.h"
 /** Floating Point Unit */
 #include    "Fpu.h"
+/** FFT validation tests */
+#include    "FFT_Test.h"
+
 //CODEC library.
 #include "CODEC.h"
 
-/*~~~~~~  Local definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-  #define SAMP_PER  (50)
-  #define BUFF_SIZE (2048)
+/*~~~~~~  Local definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /*~~~~~~  Global variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-/** Auxiliary input buffer to accomodate data as FFT function expects it */
-float       fft_inputData[BUFF_SIZE];
-/** Output magnitude data */
-float       fft_signalPower[BUFF_SIZE/2];
-/** Auxiliary output variable that holds the frequency bin with the highest level of signal power */
-uint32_t    u32fft_maxPowerIndex;
-/** Auxiliary output variable that holds the maximum level of signal power */
-float       fft_maxPower;
-
 /*~~~~~~  Local functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-void fft_process(void);
-
-pfun pFFT = &fft_process;
 
 /*----------------------------------------------------------------------------
  *        Exported functions
@@ -74,6 +62,10 @@ extern int main( void )
 	printf( "-- %s\n\r", BOARD_NAME ) ;
 	printf( "-- Compiled: %s %s With %s --\n\r", __DATE__, __TIME__ , COMPILER_NAME);
 
+  /* Run FFT validation tests once at startup */
+	printf( "-- Running FFT Validation Tests --\n\r" ) ;
+	FFT_Test_RunAll();
+
   /* Scheduler Inititalization */
   printf( "-- Scheduler Initialization --\n\r" ) ;
   
@@ -90,13 +82,4 @@ extern int main( void )
   {
 		vfnTask_Scheduler();
 	}
-}
-
-void fft_process(void)
-{
-  /** Perform FFT on the input signal */
-  fft(fft_inputData, fft_signalPower, BUFF_SIZE/2, &u32fft_maxPowerIndex, &fft_maxPower);
-        
-  /* Publish through emulated Serial */
-  printf("%5d  %5.4f \r\n", u32fft_maxPowerIndex, fft_maxPower);
 }
