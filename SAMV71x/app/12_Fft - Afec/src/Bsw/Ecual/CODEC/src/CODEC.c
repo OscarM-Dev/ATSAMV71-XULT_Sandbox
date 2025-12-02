@@ -28,20 +28,20 @@
 #define SSC_TCMR_CONFIG     SSC_TCMR_PERIOD( 0 ) | SSC_TCMR_STTDLY( 1 ) | SSC_TCMR_START_TF_EDGE | SSC_TCMR_CKG_CONTINUOUS | SSC_TCMR_CKO_NONE | SSC_TCMR_CKS_TK
 #define SSC_TFMR_CONFIG     SSC_TFMR_FSEDGE_POSITIVE | SSC_TFMR_FSOS_NONE | SSC_TFMR_DATNB( 0 ) | SSC_TFMR_MSBF | SSC_TFMR_DATLEN( 15 )
 #define SSC_RCMR_CONFIG     SSC_RCMR_PERIOD( 0 ) | SSC_RCMR_STTDLY( 1 ) | SSC_RCMR_START_RF_FALLING | SSC_RCMR_CKG_CONTINUOUS | SSC_RCMR_CKI | SSC_RCMR_CKO_NONE | SSC_RCMR_CKS_TK
-#define SSC_RFMR_CONFIG     SSC_RFMR_FSEDGE_POSITIVE | SSC_RFMR_FSOS_NONE | SSC_RFMR_DATNB( 0 ) | SSC_RFMR_MSBF | SSC_RFMR_DATLEN( 15 )
+#define SSC_RFMR_CONFIG     SSC_RFMR_FSEDGE_POSITIVE | SSC_RFMR_FSOS_NONE | SSC_RFMR_DATNB( 0 ) | SSC_RFMR_MSBF | SSC_RFMR_DATLEN( 31 )
 #define SSC_IER_CONFIG      SSC_IER_RXRDY
 #define SSC_IDR_CONFIG      SSC_IDR_RXRDY
 #define SSC_IDR_DISABLE_ALL 0xFFFFFFFF
 #define SSC_RXRDY_ISR_PRIO  1
 
 //CODEC related.
-#define DATA_BUFFER_SIZE    128000
+#define DATA_BUFFER_SIZE    64000  //For 8s audio capture.
 
 /* ************************************************************************** */
 /* Global data.
 /* ************************************************************************** */
 volatile uint8_t CaptureAudioFlag = 0;
-uint16_t CODEC_Data[DATA_BUFFER_SIZE];
+int32_t CODEC_Data[DATA_BUFFER_SIZE];
 
 /* ************************************************************************** */
 /* Private data.
@@ -155,7 +155,7 @@ static void SSC_Init( void )
  * @param data Pointer to data buffer.
  * @param bufferSize Number of buffer data elements.
  */
-static void Clear_DataBuffer( uint16_t *data, uint32_t bufferSize )
+static void Clear_DataBuffer( int32_t *data, uint32_t bufferSize )
 {
     uint32_t i = 0;
 
@@ -176,7 +176,7 @@ void SSC_Handler( void )
 {
     if ( i < DATA_BUFFER_SIZE )
     {   //Store data received.
-        CODEC_Data[i] = ( uint16_t ) SSC_Read( SSC );
+        CODEC_Data[i] = ( ( int32_t ) SSC_Read( SSC ) ) >> 8;
         i++;
     }
 
@@ -240,13 +240,13 @@ void CODEC_StopAudioCapture_MONO( void )
  * @param data Pointer to data buffer.
  * @param size Number of data elements of buffer.
  */
-void CODEC_PrintAudioCaptured_MONO( uint16_t *data, uint32_t size )
+void CODEC_PrintAudioCaptured_MONO( int32_t *data, uint32_t size )
 {
     uint32_t i = 0;
 
     //Printing data.
     for ( i = 0; i < size; i += 5 )
     {
-        printf( "AUDIO_DATA[%u] = %u\n\r", i, data[i] );
+        printf( "AUDIO_DATA[%u] = %d\n\r", i, data[i] );
     }
 }
