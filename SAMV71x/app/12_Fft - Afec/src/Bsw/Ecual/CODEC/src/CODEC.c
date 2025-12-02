@@ -41,7 +41,8 @@
 /* Global data.
 /* ************************************************************************** */
 volatile uint8_t CaptureAudioFlag = 0;
-uint16_t CODEC_Data[DATA_BUFFER_SIZE];
+//uint16_t CODEC_Data[DATA_BUFFER_SIZE];
+int16_t CODEC_Data[DATA_BUFFER_SIZE];
 
 /* ************************************************************************** */
 /* Private data.
@@ -155,7 +156,7 @@ static void SSC_Init( void )
  * @param data Pointer to data buffer.
  * @param bufferSize Number of buffer data elements.
  */
-static void Clear_DataBuffer( uint16_t *data, uint32_t bufferSize )
+static void Clear_DataBuffer( int16_t *data, uint32_t bufferSize )
 {
     uint32_t i = 0;
 
@@ -176,14 +177,26 @@ void SSC_Handler( void )
 {
     if ( i < DATA_BUFFER_SIZE )
     {   //Store data received.
-        CODEC_Data[i] = ( uint16_t ) SSC_Read( SSC );
+        CODEC_Data[i] = (int16_t)(SSC_Read(SSC) & 0xFFFF);
         i++;
     }
 
     else
     {   //Store and ignore data received.
-        uint32_t temporal_data = SSC_Read( SSC );
+        (void)SSC_Read(SSC);
     }
+}
+
+void WM8904_BoostADCVolume(Twid *pTwid, uint32_t device)
+{
+    // Ejemplo: +6 dB. Depende de cómo mapee el WM8904 los pasos.
+    // Empieza conservador para no saturar:
+    uint16_t vol = 0x01F0;  // algo mayor que 0x01C0
+
+    TWI_EnableMaster(pTwid->pTwi);
+    WM8904_Write(pTwid, device, 0x24, vol);  // Left
+    WM8904_Write(pTwid, device, 0x25, vol);  // Right
+    TWI_DisableMaster(pTwid->pTwi);
 }
 
 /**
@@ -203,6 +216,15 @@ void CODEC_Init( void )
 
     //Configuring CODEC via I2C.
     WM8904_Init( &I2C0_control, WM8904_SLAVE_ADDRESS, PMC_PCK_CSS_SLOW_CLK );
+
+    WM8904_IN2R_IN1L(&I2C0_control, WM8904_SLAVE_ADDRESS);
+
+    WM8904_BoostADCVolume(&I2C0_control, WM8904_SLAVE_ADDRESS);
+
+    TWI_EnableMaster(I2C0_control.pTwi);
+    uint16_t id = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x00);
+    printf("WM8904 ID (R0) = 0x%04X\r\n", id);
+    TWI_DisableMaster(I2C0_control.pTwi);
 }
 
 /**
@@ -227,9 +249,59 @@ void CODEC_StopAudioCapture_MONO( void )
     printf( "Stoping audio capture \n\r" );
     SSC_DisableInterrupts( SSC, SSC_IDR_CONFIG );
     SSC_DisableReceiver( SSC );
-    i = 0;
+    
+    uint32_t used = i;
+
     WM8904_DisableLeftADC( &I2C0_control, WM8904_SLAVE_ADDRESS );
+
+    /* ---------------------- Diagnóstico WM8904 ----------------------- */
+    uint16_t sample = CODEC_Data[100];
+    printf("Sample[100] = %u\r\n", sample);
+
+    uint16_t raw;
+
+    TWI_EnableMaster(I2C0_control.pTwi);
+
+    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2C);
+    printf("R44 Analogue Left Input 0 = 0x%04X\r\n", raw);
+
+    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2D);
+    printf("R45 Analogue Right Input 0 = 0x%04X\r\n", raw);
+
+    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2E);
+    printf("R46 Analogue Left Input 1 = 0x%04X\r\n", raw);
+
+    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2F);
+    printf("R47 Analogue Right Input 1 = 0x%04X\r\n", raw);
+
+    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x0A);
+    printf("R10 Analogue ADC 0 = 0x%04X\r\n", raw);
+
+    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x24);
+    printf("R36 ADC Digital Volume Left = 0x%04X\r\n", raw);
+
+    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x25);
+    printf("R37 ADC Digital Volume Right = 0x%04X\r\n", raw);
+
+    TWI_DisableMaster(I2C0_control.pTwi);
+
+    /* ---------------------- Analizar rango de la señal ------------------ */
+    int16_t min =  32767;
+    int16_t max = -32768;
+
+    uint32_t k;
+    for (k = 0; k < used; k++) {
+        if (CODEC_Data[k] < min) min = CODEC_Data[k];
+        if (CODEC_Data[k] > max) max = CODEC_Data[k];
+    }
+
+    printf("Captured samples: %lu\r\n", (unsigned long)used);
+    printf("Signal min = %d, max = %d\r\n", min, max);
+
+    /* ---------------------- Imprimir audio --------------------------- */
     CODEC_PrintAudioCaptured_MONO( CODEC_Data, DATA_BUFFER_SIZE );
+
+    i = 0;
 }
 
 /**
@@ -240,13 +312,14 @@ void CODEC_StopAudioCapture_MONO( void )
  * @param data Pointer to data buffer.
  * @param size Number of data elements of buffer.
  */
-void CODEC_PrintAudioCaptured_MONO( uint16_t *data, uint32_t size )
+void CODEC_PrintAudioCaptured_MONO(int16_t *data, uint32_t size)
 {
-    uint32_t i = 0;
+    uint32_t i;
 
-    //Printing data.
-    for ( i = 0; i < size; i += 5 )
+    for (i = 0; i < size; i += 5)
     {
-        printf( "AUDIO_DATA[%u] = %u\n\r", i, data[i] );
+        printf("AUDIO_DATA[%lu] = %d\n\r",
+               (unsigned long)i,
+               data[i]);
     }
 }
