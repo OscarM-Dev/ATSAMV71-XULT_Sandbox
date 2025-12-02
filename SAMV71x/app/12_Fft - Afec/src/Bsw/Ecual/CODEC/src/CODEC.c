@@ -8,6 +8,7 @@
 /* Includes.
 /* ************************************************************************** */
 #include "CODEC.h"
+#include "AUDIO_FFT.h"
 
 /* ************************************************************************** */
 /* Private Macros.
@@ -28,21 +29,21 @@
 #define SSC_TCMR_CONFIG     SSC_TCMR_PERIOD( 0 ) | SSC_TCMR_STTDLY( 1 ) | SSC_TCMR_START_TF_EDGE | SSC_TCMR_CKG_CONTINUOUS | SSC_TCMR_CKO_NONE | SSC_TCMR_CKS_TK
 #define SSC_TFMR_CONFIG     SSC_TFMR_FSEDGE_POSITIVE | SSC_TFMR_FSOS_NONE | SSC_TFMR_DATNB( 0 ) | SSC_TFMR_MSBF | SSC_TFMR_DATLEN( 15 )
 #define SSC_RCMR_CONFIG     SSC_RCMR_PERIOD( 0 ) | SSC_RCMR_STTDLY( 1 ) | SSC_RCMR_START_RF_FALLING | SSC_RCMR_CKG_CONTINUOUS | SSC_RCMR_CKI | SSC_RCMR_CKO_NONE | SSC_RCMR_CKS_TK
-#define SSC_RFMR_CONFIG     SSC_RFMR_FSEDGE_POSITIVE | SSC_RFMR_FSOS_NONE | SSC_RFMR_DATNB( 0 ) | SSC_RFMR_MSBF | SSC_RFMR_DATLEN( 15 )
+#define SSC_RFMR_CONFIG     SSC_RFMR_FSEDGE_POSITIVE | SSC_RFMR_FSOS_NONE | SSC_RFMR_DATNB( 0 ) | SSC_RFMR_MSBF | SSC_RFMR_DATLEN( 31 )
 #define SSC_IER_CONFIG      SSC_IER_RXRDY
 #define SSC_IDR_CONFIG      SSC_IDR_RXRDY
 #define SSC_IDR_DISABLE_ALL 0xFFFFFFFF
 #define SSC_RXRDY_ISR_PRIO  1
 
 //CODEC related.
-#define DATA_BUFFER_SIZE    128000
+#define DATA_BUFFER_SIZE    2000
 
 /* ************************************************************************** */
 /* Global data.
 /* ************************************************************************** */
 volatile uint8_t CaptureAudioFlag = 0;
 //uint16_t CODEC_Data[DATA_BUFFER_SIZE];
-int16_t CODEC_Data[DATA_BUFFER_SIZE];
+uint32_t CODEC_Data[DATA_BUFFER_SIZE];
 
 /* ************************************************************************** */
 /* Private data.
@@ -156,7 +157,7 @@ static void SSC_Init( void )
  * @param data Pointer to data buffer.
  * @param bufferSize Number of buffer data elements.
  */
-static void Clear_DataBuffer( int16_t *data, uint32_t bufferSize )
+static void Clear_DataBuffer( uint32_t *data, uint32_t bufferSize )
 {
     uint32_t i = 0;
 
@@ -177,7 +178,8 @@ void SSC_Handler( void )
 {
     if ( i < DATA_BUFFER_SIZE )
     {   //Store data received.
-        CODEC_Data[i] = (int16_t)(SSC_Read(SSC) & 0xFFFF);
+        //CODEC_Data[i] = (int16_t)(SSC_Read(SSC) & 0xFFFF);
+        CODEC_Data[i] = SSC_Read(SSC) >> 8;
         i++;
     }
 
@@ -189,10 +191,7 @@ void SSC_Handler( void )
 
 void WM8904_BoostADCVolume(Twid *pTwid, uint32_t device)
 {
-    // Ejemplo: +6 dB. Depende de cómo mapee el WM8904 los pasos.
-    // Empieza conservador para no saturar:
-    uint16_t vol = 0x01F0;  // algo mayor que 0x01C0
-
+    uint16_t vol = 0x01F0;
     TWI_EnableMaster(pTwid->pTwi);
     WM8904_Write(pTwid, device, 0x24, vol);  // Left
     WM8904_Write(pTwid, device, 0x25, vol);  // Right
@@ -254,38 +253,27 @@ void CODEC_StopAudioCapture_MONO( void )
 
     WM8904_DisableLeftADC( &I2C0_control, WM8904_SLAVE_ADDRESS );
 
-    /* ---------------------- Diagnóstico WM8904 ----------------------- */
     uint16_t sample = CODEC_Data[100];
     printf("Sample[100] = %u\r\n", sample);
 
     uint16_t raw;
-
     TWI_EnableMaster(I2C0_control.pTwi);
-
     raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2C);
     printf("R44 Analogue Left Input 0 = 0x%04X\r\n", raw);
-
     raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2D);
     printf("R45 Analogue Right Input 0 = 0x%04X\r\n", raw);
-
     raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2E);
     printf("R46 Analogue Left Input 1 = 0x%04X\r\n", raw);
-
     raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2F);
     printf("R47 Analogue Right Input 1 = 0x%04X\r\n", raw);
-
     raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x0A);
     printf("R10 Analogue ADC 0 = 0x%04X\r\n", raw);
-
     raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x24);
     printf("R36 ADC Digital Volume Left = 0x%04X\r\n", raw);
-
     raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x25);
     printf("R37 ADC Digital Volume Right = 0x%04X\r\n", raw);
-
     TWI_DisableMaster(I2C0_control.pTwi);
 
-    /* ---------------------- Analizar rango de la señal ------------------ */
     int16_t min =  32767;
     int16_t max = -32768;
 
@@ -298,7 +286,8 @@ void CODEC_StopAudioCapture_MONO( void )
     printf("Captured samples: %lu\r\n", (unsigned long)used);
     printf("Signal min = %d, max = %d\r\n", min, max);
 
-    /* ---------------------- Imprimir audio --------------------------- */
+    AUDIO_FFT_ProcessCapturedAudio(CODEC_Data, used);
+
     CODEC_PrintAudioCaptured_MONO( CODEC_Data, DATA_BUFFER_SIZE );
 
     i = 0;
@@ -312,14 +301,12 @@ void CODEC_StopAudioCapture_MONO( void )
  * @param data Pointer to data buffer.
  * @param size Number of data elements of buffer.
  */
-void CODEC_PrintAudioCaptured_MONO(int16_t *data, uint32_t size)
+void CODEC_PrintAudioCaptured_MONO(uint32_t *data, uint32_t size)
 {
     uint32_t i;
 
     for (i = 0; i < size; i += 5)
     {
-        printf("AUDIO_DATA[%lu] = %d\n\r",
-               (unsigned long)i,
-               data[i]);
+        printf("AUDIO_DATA[%lu] = %d\n\r", (unsigned long)i, (int32_t)data[i]);
     }
 }

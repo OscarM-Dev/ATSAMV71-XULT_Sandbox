@@ -140,9 +140,9 @@ static WM8904_PARA wm8904_access_slow[]=
 	//LRCK = 256Khz / 32 = 8KHz
 	//{ 0x0042, 0x18},    /** R24  - Audio Interface 0 */
 	/** R24  - Audio Interface 0 */ //Left audio channel data src is left ADC, Right audio channel data src is right ADC, Left DAC data is transmitted if left audio channel, Right DAC data is transmitted in right audio channel 
-	{ 0x0042, 0x19},      /** R25  - Audio Interface 1 */ //BCLK not inverted, BCLK is output, 16 bit data word length, I2S audio format
-	{ 0x0014, 0x1A},      /** R26  - Audio Interface 2 */ //BCLK freq = SYSCLK / 48,
-	{ 0x0820, 0x1B},      /** R27  - Audio Interface 3 */ //LRCLK is output, LRCLK rate = 32  
+	{ 0x004E, 0x19},      /** R25  - Audio Interface 1 */ //BCLK not inverted, BCLK is output, 32 bit data word length, I2S audio format
+    { 0x000F, 0x1A},      /** R26  - Audio Interface 2 */ //BCLK freq = SYSCLK / 24,
+    { 0x0840, 0x1B},      /** R27  - Audio Interface 3 */ //LRCLK is output, LRCLK rate = 64
 	//{ 0x000F, 0x12},      /** R18  - Power Management 6 */	  //Left DAC enabled, Rigth DAC enabled, Left ADC enabled, Right ADC enabled. /*insert_delay_ms 5*/
 	
 	//ADC related
