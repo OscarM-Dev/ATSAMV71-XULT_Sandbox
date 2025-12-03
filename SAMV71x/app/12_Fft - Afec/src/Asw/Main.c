@@ -62,10 +62,6 @@ extern int main( void )
 	printf( "-- %s\n\r", BOARD_NAME ) ;
 	printf( "-- Compiled: %s %s With %s --\n\r", __DATE__, __TIME__ , COMPILER_NAME);
 
-  /* Run FFT validation tests once at startup */
-	//printf( "-- Running FFT Validation Tests --\n\r" ) ;
-	//FFT_Test_RunAll();
-
   /* Scheduler Inititalization */
   printf( "-- Scheduler Initialization --\n\r" ) ;
   

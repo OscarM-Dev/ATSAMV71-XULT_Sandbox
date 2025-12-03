@@ -187,15 +187,6 @@ void SSC_Handler( void )
     }
 }
 
-void WM8904_BoostADCVolume(Twid *pTwid, uint32_t device)
-{
-    uint16_t vol = 0x01F0;
-    TWI_EnableMaster(pTwid->pTwi);
-    WM8904_Write(pTwid, device, 0x24, vol);  // Left
-    WM8904_Write(pTwid, device, 0x25, vol);  // Right
-    TWI_DisableMaster(pTwid->pTwi);
-}
-
 /**
  * @brief This function initializes all the MCU configurations and the CODEC configuration for audio capture.
  * @note Mono audio capture is used with the Left MIC channel due to RAM limitations.
@@ -213,15 +204,6 @@ void CODEC_Init( void )
 
     //Configuring CODEC via I2C.
     WM8904_Init( &I2C0_control, WM8904_SLAVE_ADDRESS, PMC_PCK_CSS_SLOW_CLK );
-
-    WM8904_IN2R_IN1L(&I2C0_control, WM8904_SLAVE_ADDRESS);
-
-    //WM8904_BoostADCVolume(&I2C0_control, WM8904_SLAVE_ADDRESS);
-
-    TWI_EnableMaster(I2C0_control.pTwi);
-    uint16_t id = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x00);
-    printf("WM8904 ID (R0) = 0x%04X\r\n", id);
-    TWI_DisableMaster(I2C0_control.pTwi);
 }
 
 /**
@@ -250,27 +232,6 @@ void CODEC_StopAudioCapture_MONO( void )
     uint32_t used = i;
 
     WM8904_DisableLeftADC( &I2C0_control, WM8904_SLAVE_ADDRESS );
-
-    uint16_t sample = CODEC_Data[100];
-    printf("Sample[100] = %u\r\n", sample);
-
-    uint16_t raw;
-    TWI_EnableMaster(I2C0_control.pTwi);
-    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2C);
-    printf("R44 Analogue Left Input 0 = 0x%04X\r\n", raw);
-    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2D);
-    printf("R45 Analogue Right Input 0 = 0x%04X\r\n", raw);
-    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2E);
-    printf("R46 Analogue Left Input 1 = 0x%04X\r\n", raw);
-    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x2F);
-    printf("R47 Analogue Right Input 1 = 0x%04X\r\n", raw);
-    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x0A);
-    printf("R10 Analogue ADC 0 = 0x%04X\r\n", raw);
-    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x24);
-    printf("R36 ADC Digital Volume Left = 0x%04X\r\n", raw);
-    raw = WM8904_Read(&I2C0_control, WM8904_SLAVE_ADDRESS, 0x25);
-    printf("R37 ADC Digital Volume Right = 0x%04X\r\n", raw);
-    TWI_DisableMaster(I2C0_control.pTwi);
 
     int16_t min =  32767;
     int16_t max = -32768;
